@@ -15,8 +15,6 @@
 
 package com.looker.kenko.ui.feature.exercise.progress
 
-import androidx.annotation.StringRes
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,14 +26,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Insights
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -50,13 +45,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.looker.kenko.R
-import com.looker.kenko.domain.model.Weight
-import com.looker.kenko.domain.statistics.ExerciseMetric
 import com.looker.kenko.domain.statistics.ExerciseSessionEntry
 import com.looker.kenko.ui.component.BackButton
 import com.looker.kenko.ui.component.EmptyState
-import com.looker.kenko.ui.component.KenkoBorder
-import com.looker.kenko.ui.component.WeightLineChart
 import com.looker.kenko.utils.DateFormat
 import com.looker.kenko.utils.formatDate
 import kotlinx.datetime.LocalDate
@@ -113,18 +104,6 @@ fun ExerciseProgressScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     item {
-                        MetricSelector(
-                            selected = state.metric,
-                            onSelect = viewModel::setMetric,
-                        )
-                    }
-                    item {
-                        ProgressChartCard(
-                            points = state.points,
-                            metric = state.metric,
-                        )
-                    }
-                    item {
                         Text(
                             text = stringResource(R.string.label_progress_history),
                             style = MaterialTheme.typography.titleSmall,
@@ -142,76 +121,6 @@ fun ExerciseProgressScreen(
                         )
                     }
                 }
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun MetricSelector(
-    selected: ExerciseMetric,
-    onSelect: (ExerciseMetric) -> Unit,
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .horizontalScroll(rememberScrollState()),
-        horizontalArrangement = Arrangement.spacedBy(6.dp),
-    ) {
-        ExerciseMetric.entries.forEach { metric ->
-            val isSelected = metric == selected
-            FilterChip(
-                selected = isSelected,
-                onClick = { onSelect(metric) },
-                label = { Text(stringResource(metric.labelRes)) },
-                colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
-                    selectedLabelColor = MaterialTheme.colorScheme.primary,
-                ),
-                border = if (isSelected) {
-                    androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.4f))
-                } else {
-                    KenkoBorder
-                },
-            )
-        }
-    }
-}
-
-@Composable
-private fun ProgressChartCard(
-    points: List<com.looker.kenko.domain.statistics.ExerciseProgressPoint>,
-    metric: ExerciseMetric,
-) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.medium,
-        color = MaterialTheme.colorScheme.surfaceContainerLow,
-    ) {
-        Column(modifier = Modifier.padding(12.dp)) {
-            Text(
-                text = stringResource(metric.labelRes),
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            if (points.size < 2) {
-                Box(
-                    modifier = Modifier.fillMaxWidth().height(160.dp),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        text = stringResource(R.string.label_progress_no_data),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-            } else {
-                WeightLineChart(
-                    weights = points.map { Weight(date = it.date, value = it.value) },
-                    modifier = Modifier.height(180.dp),
-                )
             }
         }
     }
@@ -251,36 +160,17 @@ private fun SessionEntryCard(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            Column(horizontalAlignment = Alignment.End) {
-                Text(
-                    text = stringResource(
-                        R.string.label_estimated_1rm_value,
-                        formatWeight(entry.estimatedOneRepMax),
-                    ),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                )
-                Text(
-                    text = stringResource(
-                        R.string.label_volume_value,
-                        formatWeight(entry.volume),
-                    ),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
+            Text(
+                text = stringResource(
+                    R.string.label_volume_value,
+                    formatWeight(entry.volume),
+                ),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
         }
     }
 }
-
-private val ExerciseMetric.labelRes: Int
-    @StringRes
-    get() = when (this) {
-        ExerciseMetric.HEAVIEST_WEIGHT -> R.string.label_metric_heaviest_weight
-        ExerciseMetric.ESTIMATED_1RM -> R.string.label_metric_estimated_1rm
-        ExerciseMetric.BEST_SET -> R.string.label_metric_best_set
-        ExerciseMetric.VOLUME -> R.string.label_metric_volume
-    }
 
 private fun formatWeight(value: Float): String =
     if (value == value.toInt().toFloat()) value.toInt().toString() else "%.1f".format(value)

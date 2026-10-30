@@ -22,11 +22,8 @@ import com.looker.kenko.data.repository.ExerciseRepo
 import com.looker.kenko.data.repository.WeightRepo
 import com.looker.kenko.domain.model.Exercise
 import com.looker.kenko.domain.statistics.BodyWeightRecord
-import com.looker.kenko.domain.statistics.ExerciseMetric
-import com.looker.kenko.domain.statistics.ExerciseProgressPoint
 import com.looker.kenko.domain.statistics.ExerciseSessionEntry
 import com.looker.kenko.domain.statistics.buildExerciseEntries
-import com.looker.kenko.domain.statistics.buildExerciseProgress
 import com.looker.kenko.ui.base.KenkoViewModel
 import com.looker.kenko.ui.feature.exercise.navigation.ExerciseProgressRoute
 import com.looker.kenko.utils.asStateFlow
@@ -48,7 +45,6 @@ class ExerciseProgressViewModel @Inject constructor(
     private val exerciseId: Int = route.exerciseId
 
     private val _exercise = MutableStateFlow<Exercise?>(null)
-    private val _metric = MutableStateFlow(ExerciseMetric.ESTIMATED_1RM)
 
     init {
         launchCatching { _exercise.value = repo.get(exerciseId) }
@@ -58,8 +54,7 @@ class ExerciseProgressViewModel @Inject constructor(
         _exercise,
         repo.streamExerciseSets(exerciseId),
         weightRepo.weights,
-        _metric,
-    ) { exercise, records, weights, metric ->
+    ) { exercise, records, weights ->
         val bodyWeights = weights.map { BodyWeightRecord(it.date, it.value) }
         val entries = buildExerciseEntries(
             records = records,
@@ -68,23 +63,15 @@ class ExerciseProgressViewModel @Inject constructor(
         )
         ExerciseProgressUiData(
             exercise = exercise,
-            metric = metric,
-            points = buildExerciseProgress(entries, metric),
             entries = entries,
             isLoading = exercise == null,
         )
     }.asStateFlow(ExerciseProgressUiData(), started = SharingStarted.Eagerly)
-
-    fun setMetric(metric: ExerciseMetric) {
-        _metric.value = metric
-    }
 }
 
 @Stable
 data class ExerciseProgressUiData(
     val exercise: Exercise? = null,
-    val metric: ExerciseMetric = ExerciseMetric.ESTIMATED_1RM,
-    val points: List<ExerciseProgressPoint> = emptyList(),
     val entries: List<ExerciseSessionEntry> = emptyList(),
     val isLoading: Boolean = true,
 )

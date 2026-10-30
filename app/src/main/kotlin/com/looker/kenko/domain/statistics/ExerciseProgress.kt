@@ -26,38 +26,13 @@ data class ExerciseSetRecord(
     val reps: Int,
 )
 
-/** 单动作进步页可切换的度量指标。 */
-enum class ExerciseMetric {
-    /** 每次训练的最重重量（kg）。 */
-    HEAVIEST_WEIGHT,
-
-    /** 每次训练的最高估算 1RM（kg，Epley）。 */
-    ESTIMATED_1RM,
-
-    /** 每次训练的最佳组重量（按估算 1RM 选出最佳组，取其重量）。 */
-    BEST_SET,
-
-    /** 每次训练的总容量（Σ 重量 × 次数，kg）。 */
-    VOLUME,
-}
-
-/** 曲线上的一个点：某训练日的指标取值。 */
-@Immutable
-data class ExerciseProgressPoint(
-    val date: LocalDate,
-    val value: Float,
-)
-
 /** 某训练日的汇总（历史列表用）。 */
 @Immutable
 data class ExerciseSessionEntry(
     val date: LocalDate,
-    val heaviestWeight: Float,
     val bestSetWeight: Float,
     val bestSetReps: Int,
-    val estimatedOneRepMax: Float,
     val volume: Float,
-    val setCount: Int,
 )
 
 /**
@@ -129,27 +104,8 @@ fun buildExerciseEntries(
             )
             ExerciseSessionEntry(
                 date = date,
-                heaviestWeight = entries.maxOf { it.second },
                 bestSetWeight = best?.second ?: 0f,
                 bestSetReps = best?.first?.reps ?: 0,
-                estimatedOneRepMax = best?.let { estimatedOneRepMax(it.second, it.first.reps) } ?: 0f,
                 volume = entries.sumOf { (it.second * it.first.reps).toDouble() }.toFloat(),
-                setCount = entries.size,
             )
         }
-
-/** 把历史条目映射为指定指标的曲线点。 */
-fun buildExerciseProgress(
-    entries: List<ExerciseSessionEntry>,
-    metric: ExerciseMetric,
-): List<ExerciseProgressPoint> = entries.map { entry ->
-    ExerciseProgressPoint(
-        date = entry.date,
-        value = when (metric) {
-            ExerciseMetric.HEAVIEST_WEIGHT -> entry.heaviestWeight
-            ExerciseMetric.ESTIMATED_1RM -> entry.estimatedOneRepMax
-            ExerciseMetric.BEST_SET -> entry.bestSetWeight
-            ExerciseMetric.VOLUME -> entry.volume
-        },
-    )
-}

@@ -107,12 +107,7 @@
     <string name="label_exercise_progress">Progress</string>
     <string name="label_progress_no_data">No data yet</string>
     <string name="label_progress_history">History</string>
-    <string name="label_metric_heaviest_weight">Heaviest Weight</string>
-    <string name="label_metric_estimated_1rm">Est. 1RM</string>
-    <string name="label_metric_best_set">Best Set</string>
-    <string name="label_metric_volume">Volume</string>
     <string name="label_best_set_value">Best set %1$s kg × %2$d</string>
-    <string name="label_estimated_1rm_value">1RM %1$s kg</string>
     <string name="label_volume_value">Volume %1$s kg</string>
     <string name="label_calendar">Calendar</string>
     <string name="label_month_training_days">%1$d days trained this month</string>

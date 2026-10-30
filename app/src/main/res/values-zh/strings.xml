@@ -103,12 +103,7 @@
     <string name="label_exercise_progress">动作进步</string>
     <string name="label_progress_no_data">暂无记录</string>
     <string name="label_progress_history">历史</string>
-    <string name="label_metric_heaviest_weight">最重重量</string>
-    <string name="label_metric_estimated_1rm">估算 1RM</string>
-    <string name="label_metric_best_set">最佳组</string>
-    <string name="label_metric_volume">总容量</string>
     <string name="label_best_set_value">最佳组 %1$s kg × %2$d</string>
-    <string name="label_estimated_1rm_value">1RM %1$s kg</string>
     <string name="label_volume_value">容量 %1$s kg</string>
     <string name="label_calendar">日历</string>
     <string name="label_month_training_days">本月训练 %1$d 天</string>

@@ -47,26 +47,12 @@ class ExerciseProgressTest {
         assertEquals(2, entries.size)
         val first = entries[0]
         assertEquals(d1, first.date)
-        assertEquals(100f, first.heaviestWeight)
         // 100x5 (est 116.7) beats 90x3 (est 99.0)
         assertEquals(100f, first.bestSetWeight)
         assertEquals(5, first.bestSetReps)
-        assertEquals(116.6667f, first.estimatedOneRepMax, 0.01f)
         assertEquals(770f, first.volume)
-        assertEquals(2, first.setCount)
         // ordering is ascending by date
         assertEquals(d2, entries[1].date)
-    }
-
-    @Test
-    fun `progress series maps metric to value`() {
-        val entries = buildExerciseEntries(
-            listOf(ExerciseSetRecord(LocalDate(2026, 1, 1), 100f, 5)),
-        )
-        assertEquals(100f, buildExerciseProgress(entries, ExerciseMetric.HEAVIEST_WEIGHT).single().value)
-        assertEquals(500f, buildExerciseProgress(entries, ExerciseMetric.VOLUME).single().value)
-        assertEquals(100f, buildExerciseProgress(entries, ExerciseMetric.BEST_SET).single().value)
-        assertEquals(116.6667f, buildExerciseProgress(entries, ExerciseMetric.ESTIMATED_1RM).single().value, 0.01f)
     }
 
     @Test
@@ -82,7 +68,7 @@ class ExerciseProgressTest {
         val entries = buildExerciseEntries(bodyweightOnly + ExerciseSetRecord(weightedDay, 10f, 8))
         assertEquals(1, entries.size)
         assertEquals(weightedDay, entries.single().date)
-        assertEquals(10f, entries.single().heaviestWeight)
+        assertEquals(10f, entries.single().bestSetWeight)
     }
 
     @Test
@@ -101,8 +87,7 @@ class ExerciseProgressTest {
             bodyWeights = bodyWeights,
         )
         assertEquals(1, alone.size)
-        assertEquals(65f, alone.single().heaviestWeight)
-        assertEquals(65f * (1f + 10f / 30f), alone.single().estimatedOneRepMax, 0.01f)
+        assertEquals(65f, alone.single().bestSetWeight)
 
         // weighted set -> body weight (65, latest <= d2) + added 10 = 75
         val mixed = buildExerciseEntries(
@@ -110,7 +95,7 @@ class ExerciseProgressTest {
             isBodyweight = true,
             bodyWeights = bodyWeights,
         )
-        assertEquals(75f, mixed.single().heaviestWeight)
+        assertEquals(75f, mixed.single().bestSetWeight)
     }
 
     @Test
