@@ -90,11 +90,7 @@ class TagManagementViewModel @Inject constructor(
         }
     }
 
-    fun exerciseCount(tagId: Int, callback: (Int) -> Unit) {
-        launchCatching {
-            callback(tagRepo.exerciseCount(tagId))
-        }
-    }
+    suspend fun exerciseCount(tagId: Int): Int = tagRepo.exerciseCount(tagId)
 
     fun updateSortOrder(tagId: Int, newOrder: Int) {
         launchCatching {
