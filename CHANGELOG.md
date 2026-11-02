@@ -8,7 +8,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Exercise progress page: open any exercise from the browse list to see its heaviest weight, estimated 1RM (Epley), best set, and total volume over time, with a per-session history
 - Calendar view of training history: days with a workout are highlighted and open the session detail
 - Editing a past workout record now lets you add exercises that are not part of the plan
 - Adding exercises now supports multi-select; exercises not in the plan can be added to a workout and appear even before any set is logged
