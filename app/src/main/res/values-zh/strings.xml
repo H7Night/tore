@@ -100,11 +100,6 @@
     <string name="label_edit_body_weight">编辑体重</string>
     <string name="placeholder_set_day_title">设置标题（如：胸部训练）</string>
     <string name="label_weight_unit">kg</string>
-    <string name="label_exercise_progress">动作进步</string>
-    <string name="label_progress_no_data">暂无记录</string>
-    <string name="label_progress_history">历史</string>
-    <string name="label_best_set_value">最佳组 %1$s kg × %2$d</string>
-    <string name="label_volume_value">容量 %1$s kg</string>
     <string name="label_calendar">日历</string>
     <string name="label_month_training_days">本月训练 %1$d 天</string>
     <string name="label_year_month">%1$d年%2$d月</string>

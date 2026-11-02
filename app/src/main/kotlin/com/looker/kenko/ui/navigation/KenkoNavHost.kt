@@ -28,8 +28,6 @@ import com.looker.kenko.ui.feature.backup.navigation.backup
 import com.looker.kenko.ui.feature.backup.navigation.navigateToBackup
 import com.looker.kenko.ui.feature.exercise.navigation.addEditExercise
 import com.looker.kenko.ui.feature.exercise.navigation.navigateToAddEditExercise
-import com.looker.kenko.ui.feature.exercise.navigation.exerciseProgress
-import com.looker.kenko.ui.feature.exercise.navigation.navigateToExerciseProgress
 import com.looker.kenko.ui.feature.exercise.navigation.exercises
 import com.looker.kenko.ui.feature.exercise.navigation.navigateToExercises
 import com.looker.kenko.ui.feature.home.navigation.HomeRoute
@@ -175,9 +173,6 @@ fun KenkoNavHost(
                 )
             },
             onBackPress = navController::popBackStackOnResume,
-            onProgressClick = { id ->
-                navController.navigateToExerciseProgress(id, navOptions = singleTopNavOptions)
-            },
         )
 
         planEdit(navController::popBackStackOnResume) { name ->
@@ -199,13 +194,6 @@ fun KenkoNavHost(
         )
 
         addEditExercise(navController::popBackStackOnResume)
-
-        exerciseProgress(
-            onBackPress = navController::popBackStackOnResume,
-            onSessionClick = { date ->
-                navController.navigateToSessionDetail(date = date, navOptions = singleTopNavOptions)
-            },
-        )
 
         tagManagement(navController::popBackStackOnResume)
 

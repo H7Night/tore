@@ -28,7 +28,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -38,7 +37,6 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.FitnessCenter
 import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material.icons.rounded.ShowChart
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
@@ -94,7 +92,6 @@ fun Exercises(
     onExerciseClick: (id: Int?) -> Unit,
     onCreateClick: () -> Unit,
     onBackPress: () -> Unit,
-    onProgressClick: (Int) -> Unit,
 ) {
     val state by viewModel.exercises.collectAsStateWithLifecycle()
     val parentTags by viewModel.parentTags.collectAsStateWithLifecycle()
@@ -119,7 +116,6 @@ fun Exercises(
         onCreateClick = onCreateClick,
         onReferenceClick = viewModel::onReferenceClick,
         onRemove = viewModel::removeExercise,
-        onProgressClick = onProgressClick,
     )
 }
 
@@ -141,7 +137,6 @@ private fun Exercises(
     onRemove: (Int?) -> Unit,
     onBackPress: () -> Unit,
     onReferenceClick: (String) -> Unit,
-    onProgressClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var exerciseToDelete by remember { mutableStateOf<Int?>(null) }
@@ -389,7 +384,6 @@ private fun Exercises(
                 onExerciseClick = onExerciseClick,
                 onReferenceClick = onReferenceClick,
                 onRequestRemove = { exerciseToDelete = it },
-                onProgressClick = onProgressClick,
             )
         }
     }
@@ -418,7 +412,6 @@ private fun ExercisesList(
     onExerciseClick: (id: Int?) -> Unit,
     onRequestRemove: (Int?) -> Unit,
     onReferenceClick: (String) -> Unit,
-    onProgressClick: (Int) -> Unit,
 ) {
     LazyColumn(
         contentPadding = contentPadding + PaddingValues(horizontal = 14.dp, vertical = 6.dp),
@@ -466,19 +459,6 @@ private fun ExercisesList(
                             }
                         }
                     }
-                    exerciseId?.let { id ->
-                        TooltipIconButton(
-                            tooltip = stringResource(R.string.label_exercise_progress),
-                            onClick = { onProgressClick(id) },
-                        ) {
-                            Icon(
-                                imageVector = Icons.Rounded.ShowChart,
-                                contentDescription = stringResource(R.string.label_exercise_progress),
-                                modifier = Modifier.size(18.dp),
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        }
-                    }
                     DeleteIconButton(onClick = { onRequestRemove(exerciseId) })
                 }
             }
@@ -506,7 +486,6 @@ private fun ExercisesPreview(
             onBackPress = {},
             onReferenceClick = {},
             onRemove = {},
-            onProgressClick = {},
         )
     }
 }
