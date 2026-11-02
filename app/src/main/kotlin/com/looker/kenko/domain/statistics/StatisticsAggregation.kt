@@ -68,7 +68,6 @@ fun aggregateStatistics(
         sessionDates = dates,
         countByDate = countByDate,
         today = today,
-        heatmapData = buildHeatmapData90d(dates, today),
         bodyParts = bodyParts,
         weeklyCounts = weeklyCounts,
         monthlyCounts = monthlyCounts,
@@ -76,9 +75,6 @@ fun aggregateStatistics(
         cardioWeekly = cardioWeekly,
         cardioMonthly = cardioMonthly,
         cardioPlan = cardioPlan,
-        cardioMinutesWeekly = cardioWeekly,
-        cardioMinutesMonthly = cardioMonthly,
-        cardioMinutesPlan = cardioPlan,
         weeklyTrend = buildWeeklyTrend(summaries, today),
     )
 }

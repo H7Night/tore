@@ -26,9 +26,11 @@ import kotlinx.datetime.LocalDate
 internal class FakeSessionRepo(
     summaries: List<SessionSummary> = emptyList(),
     sessions: List<Session> = emptyList(),
+    cardioMinutes: Map<LocalDate, Int> = emptyMap(),
 ) : SessionRepo {
     private val _summaries = MutableStateFlow(summaries)
     private val _stream = MutableStateFlow(sessions)
+    private val _cardioMinutes = MutableStateFlow(cardioMinutes)
     override val stream: Flow<List<Session>> = _stream
     override val streamSummaries: Flow<List<SessionSummary>> = _summaries
     override val planDateRanges: Flow<Map<Int, Pair<LocalDate, LocalDate>>> = MutableStateFlow(emptyMap())
@@ -44,6 +46,7 @@ internal class FakeSessionRepo(
     override suspend fun ensureSessionStarted(sessionId: Int, startedAtMillis: Long) = Unit
     override suspend fun updateSessionEnded(sessionId: Int, endedAtMillis: Long) = Unit
     override fun streamSessionExerciseIds(sessionId: Int): Flow<List<Int>> = MutableStateFlow(emptyList())
+    override fun streamCardioMinutesByDate(exerciseIds: List<Int>): Flow<Map<LocalDate, Int>> = _cardioMinutes
     override suspend fun addSessionExercise(sessionId: Int, exerciseId: Int) = Unit
     override suspend fun removeSessionExercise(sessionId: Int, exerciseId: Int) = Unit
     override suspend fun getSessionIdOrCreate(date: LocalDate): Int = 1
@@ -114,30 +117,6 @@ internal class FakeTagRepo(private val tags: List<Tag> = emptyList()) : TagRepo 
     override suspend fun exerciseCount(tagId: Int): Int = 0
     override suspend fun getTagsForExercise(exerciseId: Int): List<Tag> = emptyList()
     override fun streamTagsForExercise(exerciseId: Int): Flow<List<Tag>> = MutableStateFlow(emptyList())
-}
-
-internal class FakeSetsDao(
-    private val cardio: List<CardioMinutesByDate> = emptyList(),
-) : SetsDao {
-    var cardioQueryCount = 0
-        private set
-
-    override fun setsBySessionId(sessionId: Int): Flow<List<SetEntity>> = MutableStateFlow(emptyList())
-    override suspend fun getSetsBySessionId(sessionId: Int): List<SetEntity> = emptyList()
-    override suspend fun getSetsCountBySessionId(sessionId: Int): Int? = 0
-    override fun setsByExerciseIdPerPlan(exerciseId: Int?, planId: Int?): Flow<List<SetEntity>> = MutableStateFlow(emptyList())
-    override suspend fun getSetsByExerciseIdPerPlan(exerciseId: Int?, planId: Int?): List<SetEntity> = emptyList()
-    override fun totalSetCount(): Flow<Int> = MutableStateFlow(0)
-    override suspend fun insert(set: SetEntity) = Unit
-    override suspend fun update(set: SetEntity) = Unit
-    override suspend fun update(setId: Int, reps: Int, weight: Float) = Unit
-    override suspend fun delete(setId: Int) = Unit
-    override suspend fun deleteBySessionId(sessionId: Int) = Unit
-    override suspend fun hasSetsForExercise(exerciseId: Int): Boolean = false
-    override fun streamCardioMinutesByDate(exerciseIds: List<Int>): Flow<List<CardioMinutesByDate>> {
-        cardioQueryCount++
-        return MutableStateFlow(cardio)
-    }
 }
 
 internal class FakeWeightRepo : WeightRepo {

@@ -24,10 +24,6 @@ data class StatisticsUiState(
     val sessionDates: Set<LocalDate> = emptySet(),
     val countByDate: Map<LocalDate, Int> = emptyMap(),
     val today: LocalDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
-    val heatmapData: HeatmapData = buildHeatmapData90d(
-        emptySet(),
-        Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
-    ),
     val bodyParts: List<String> = emptyList(),
     val weeklyCounts: Map<String, Int> = emptyMap(),
     val monthlyCounts: Map<String, Int> = emptyMap(),
@@ -35,8 +31,5 @@ data class StatisticsUiState(
     val cardioWeekly: Int = 0,
     val cardioMonthly: Int = 0,
     val cardioPlan: Int = 0,
-    val cardioMinutesWeekly: Int = 0,
-    val cardioMinutesMonthly: Int = 0,
-    val cardioMinutesPlan: Int = 0,
     val weeklyTrend: List<Int> = emptyList(),
 )

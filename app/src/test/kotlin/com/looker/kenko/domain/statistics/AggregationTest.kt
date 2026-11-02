@@ -100,34 +100,6 @@ class AggregationTest {
     }
 
     @Test
-    fun `heatmap covers 91 days Monday-aligned`() {
-        val today = LocalDate(2026, 9, 7) // Monday
-        val data = buildHeatmapData90d(setOf(today), today)
-        assertEquals(13, data.weeks.size)
-        assertEquals(91, data.weeks.sumOf { it.days.count { d -> d != null } })
-    }
-
-    @Test
-    fun `heatmap start is Monday end is Sunday`() {
-        val today = LocalDate(2026, 9, 9) // Wednesday
-        val data = buildHeatmapData90d(emptySet(), today)
-        val allDates = data.weeks.flatMap { it.days }.filterNotNull()
-        assertEquals(91, allDates.size)
-        // first date should be Monday
-        assertEquals(1, allDates.first().dayOfWeek.isoDayNumber)
-        // last date should be Sunday
-        assertEquals(7, allDates.last().dayOfWeek.isoDayNumber)
-    }
-
-    @Test
-    fun `heatmap contains today`() {
-        val today = LocalDate(2026, 9, 7)
-        val data = buildHeatmapData90d(setOf(today), today)
-        val allDates = data.weeks.flatMap { it.days }.filterNotNull()
-        assertEquals(true, allDates.contains(today))
-    }
-
-    @Test
     fun `buildHeatmapData spans full range Monday to Sunday aligned`() {
         val data = buildHeatmapData(LocalDate(2026, 1, 15), LocalDate(2026, 9, 20))
         assertEquals(1, data.weeks.first().days.first()!!.dayOfWeek.isoDayNumber)

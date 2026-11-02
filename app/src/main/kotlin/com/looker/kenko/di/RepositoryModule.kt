@@ -20,11 +20,13 @@ import com.looker.kenko.data.repository.ExerciseRepo
 import com.looker.kenko.data.repository.PlanRepo
 import com.looker.kenko.data.repository.SessionRepo
 import com.looker.kenko.data.repository.SettingsRepo
+import com.looker.kenko.data.repository.StatisticsRepo
 import com.looker.kenko.data.repository.TagRepo
 import com.looker.kenko.data.repository.WeightRepo
 import com.looker.kenko.data.repository.local.LocalExerciseRepo
 import com.looker.kenko.data.repository.local.LocalPlanRepo
 import com.looker.kenko.data.repository.local.LocalSessionRepo
+import com.looker.kenko.data.repository.local.LocalStatisticsRepo
 import com.looker.kenko.data.repository.local.LocalTagRepo
 import com.looker.kenko.data.repository.local.LocalWeightRepo
 import dagger.Binds
@@ -50,6 +52,11 @@ abstract class RepositoryModule {
     abstract fun bindExerciseRepo(
         repo: LocalExerciseRepo,
     ): ExerciseRepo
+
+    @Binds
+    abstract fun bindStatisticsRepo(
+        repo: LocalStatisticsRepo,
+    ): StatisticsRepo
 
     @Binds
     abstract fun bindSettingsRepo(
