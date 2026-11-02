@@ -28,9 +28,6 @@ import kotlinx.datetime.plus
 
 const val CARDIO_PART = "有氧"
 
-/** 90 天热力图窗口的周数。 */
-const val HEATMAP_WEEKS = 13
-
 /** 统计页热力图展示的天数窗口（不横向滚动）。 */
 const val HEATMAP_WINDOW_DAYS = 120
 
@@ -109,24 +106,6 @@ data class HeatmapData(
 data class HeatmapWeek(
     val days: List<LocalDate?>,
 )
-
-fun buildHeatmapData90d(
-    dates: Set<LocalDate>,
-    today: LocalDate,
-): HeatmapData {
-    val dow = today.dayOfWeek.isoDayNumber
-    val endSunday = today.plus(7 - dow, DateTimeUnit.DAY)
-    val startMonday = endSunday.minus(HEATMAP_WEEKS * 7 - 1, DateTimeUnit.DAY)
-    val weeks = mutableListOf<HeatmapWeek>()
-    for (w in 0 until HEATMAP_WEEKS) {
-        val weekStart = startMonday.plus(w * 7, DateTimeUnit.DAY)
-        val days = (0 until 7).map { d ->
-            weekStart.plus(d, DateTimeUnit.DAY)
-        }
-        weeks.add(HeatmapWeek(days = days))
-    }
-    return HeatmapData(weeks = weeks)
-}
 
 /**
  * GitHub 式热力图数据：从 [from] 到 [to]（含），按周（周一~周日）对齐。

@@ -17,16 +17,16 @@ package com.looker.kenko.di
 
 import com.looker.kenko.data.local.datastore.DatastoreSettingsRepo
 import com.looker.kenko.data.repository.ExerciseRepo
-import com.looker.kenko.data.repository.PerformanceRepo
 import com.looker.kenko.data.repository.PlanRepo
 import com.looker.kenko.data.repository.SessionRepo
 import com.looker.kenko.data.repository.SettingsRepo
+import com.looker.kenko.data.repository.StatisticsRepo
 import com.looker.kenko.data.repository.TagRepo
 import com.looker.kenko.data.repository.WeightRepo
 import com.looker.kenko.data.repository.local.LocalExerciseRepo
-import com.looker.kenko.data.repository.local.LocalPerformanceRepo
 import com.looker.kenko.data.repository.local.LocalPlanRepo
 import com.looker.kenko.data.repository.local.LocalSessionRepo
+import com.looker.kenko.data.repository.local.LocalStatisticsRepo
 import com.looker.kenko.data.repository.local.LocalTagRepo
 import com.looker.kenko.data.repository.local.LocalWeightRepo
 import dagger.Binds
@@ -54,9 +54,9 @@ abstract class RepositoryModule {
     ): ExerciseRepo
 
     @Binds
-    abstract fun bindPerformanceRepo(
-        repo: LocalPerformanceRepo,
-    ): PerformanceRepo
+    abstract fun bindStatisticsRepo(
+        repo: LocalStatisticsRepo,
+    ): StatisticsRepo
 
     @Binds
     abstract fun bindSettingsRepo(

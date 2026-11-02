@@ -22,7 +22,6 @@ import com.looker.kenko.domain.model.Weight
 import com.looker.kenko.domain.model.today
 import com.looker.kenko.data.repository.ExerciseRepo
 import com.looker.kenko.data.repository.PlanRepo
-import com.looker.kenko.data.repository.SessionRepo
 import com.looker.kenko.data.repository.SettingsRepo
 import com.looker.kenko.data.repository.WeightRepo
 import com.looker.kenko.ui.base.KenkoViewModel

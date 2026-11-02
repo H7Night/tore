@@ -66,6 +66,9 @@ interface SessionRepo {
     /** 某 session 显式添加的动作 id(有序),含暂无组的空动作。 */
     fun streamSessionExerciseIds(sessionId: Int): Flow<List<Int>>
 
+    /** 有氧分钟按训练日聚合（统计页用）。 */
+    fun streamCardioMinutesByDate(exerciseIds: List<Int>): Flow<Map<LocalDate, Int>>
+
     suspend fun addSessionExercise(sessionId: Int, exerciseId: Int)
 
     suspend fun removeSessionExercise(sessionId: Int, exerciseId: Int)

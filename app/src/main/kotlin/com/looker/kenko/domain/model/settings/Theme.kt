@@ -15,11 +15,8 @@
 
 package com.looker.kenko.domain.model.settings
 
-import androidx.annotation.StringRes
-import com.looker.kenko.R
-
-enum class Theme(@StringRes val nameRes: Int) {
-    System(R.string.label_theme_system),
-    Light(R.string.label_theme_light),
-    Dark(R.string.label_theme_dark),
+enum class Theme {
+    System,
+    Light,
+    Dark,
 }

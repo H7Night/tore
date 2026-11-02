@@ -33,7 +33,6 @@ import com.looker.kenko.domain.model.Set
 fun DeletableSetItem(
     set: Set,
     modifier: Modifier = Modifier,
-    isToday: Boolean = true,
     isEditMode: Boolean = false,
     onRepsUpdate: (Int) -> Unit = {},
     onWeightUpdate: (Float) -> Unit = {},
@@ -43,7 +42,6 @@ fun DeletableSetItem(
     val content = @Composable {
         SetItem(
             set = set,
-            isToday = isToday,
             isEditMode = isEditMode,
             onRepsUpdate = onRepsUpdate,
             onWeightUpdate = onWeightUpdate,

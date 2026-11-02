@@ -84,25 +84,38 @@ class AddEditExerciseViewModel @Inject constructor(
         .debounce(AppConstants.DEBOUNCE_SHORT_MILLIS.milliseconds)
         .mapLatest { repo.isExerciseAvailable(it) && it != originalName }
 
-    val state = combine(
+    private val flags = combine(
         exerciseAlreadyExistError,
         isBodyweightFlow,
         countTypeFlow,
+        ::Triple,
+    )
+    private val tagsAndEquipment = combine(
         selectedTags,
-        exerciseName,
-        showRenameConfirmation,
         equipmentFlow,
         primaryTagIdFlow,
-    ) { array: Array<*> ->
+        ::Triple,
+    )
+    private val nameAndRename = combine(
+        exerciseName,
+        showRenameConfirmation,
+        ::Pair,
+    )
+
+    val state = combine(
+        flags,
+        tagsAndEquipment,
+        nameAndRename,
+    ) { (isError, isBodyweight, countType), (tags, equipment, primaryTagId), (name, showRename) ->
         AddEditExerciseUiState(
-            isError = array[0] as Boolean,
-            isBodyweight = array[1] as Boolean,
-            countType = array[2] as CountType,
-            selectedTags = @Suppress("UNCHECKED_CAST") array[3] as List<Tag>,
-            exerciseName = array[4] as String,
-            showRenameConfirmation = array[5] as Boolean,
-            equipment = array[6] as ExerciseEquipment?,
-            primaryTagId = array[7] as Int?,
+            isError = isError,
+            isBodyweight = isBodyweight,
+            countType = countType,
+            selectedTags = tags,
+            exerciseName = name,
+            showRenameConfirmation = showRename,
+            equipment = equipment,
+            primaryTagId = primaryTagId,
         )
     }.asStateFlow(
         AddEditExerciseUiState(

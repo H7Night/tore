@@ -20,7 +20,6 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.looker.kenko.data.local.dao.ExerciseDao
-import com.looker.kenko.data.local.dao.PerformanceDao
 import com.looker.kenko.data.local.dao.PlanDao
 import com.looker.kenko.data.local.dao.PlanHistoryDao
 import com.looker.kenko.data.local.dao.SessionDao
@@ -60,7 +59,6 @@ abstract class KenkoDatabase : RoomDatabase() {
     abstract fun planDao(): PlanDao
     abstract fun setsDao(): SetsDao
     abstract fun historyDao(): PlanHistoryDao
-    abstract fun performanceDao(): PerformanceDao
     abstract fun weightDao(): WeightDao
     abstract fun tagDao(): TagDao
 }

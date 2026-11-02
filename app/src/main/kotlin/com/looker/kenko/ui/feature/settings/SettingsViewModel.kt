@@ -15,53 +15,34 @@
 
 package com.looker.kenko.ui.feature.settings
 
-import android.net.Uri
 import androidx.compose.runtime.Stable
-import androidx.core.net.toUri
-import androidx.lifecycle.viewModelScope
-import com.looker.kenko.data.backup.BackupManager
-import com.looker.kenko.data.backup.BackupResult
-import com.looker.kenko.data.export.ExportManager
-import com.looker.kenko.data.export.ExportOptions
 import com.looker.kenko.data.health.HealthConnectManager
 import com.looker.kenko.data.repository.SessionRepo
+import com.looker.kenko.data.repository.SettingsRepo
 import com.looker.kenko.domain.health.excludingActiveSession
 import com.looker.kenko.domain.health.toHealthExerciseSession
-import com.looker.kenko.domain.model.settings.BackupInterval
-import com.looker.kenko.ui.component.timer.TrainingSessionManager
-import com.looker.kenko.ui.component.timer.TrainingSessionState
 import com.looker.kenko.domain.model.settings.ColorPalette
 import com.looker.kenko.domain.model.settings.Language
 import com.looker.kenko.domain.model.settings.Theme
-import com.looker.kenko.data.repository.SettingsRepo
 import com.looker.kenko.ui.base.KenkoViewModel
+import com.looker.kenko.ui.component.timer.TrainingSessionManager
+import com.looker.kenko.ui.component.timer.TrainingSessionState
 import com.looker.kenko.utils.asStateFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlin.time.Clock
-import kotlin.time.Instant
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import kotlinx.datetime.LocalDate
 
+/** 偏好设置与 Health Connect；备份/导出见 [com.looker.kenko.ui.feature.backup.BackupViewModel]。 */
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val repo: SettingsRepo,
-    private val backupManager: BackupManager,
-    private val exportManager: ExportManager,
     private val sessionRepo: SessionRepo,
     private val healthConnectManager: HealthConnectManager,
     private val trainingSessionManager: TrainingSessionManager,
 ) : KenkoViewModel() {
-
-    private val earliestSessionDate: Flow<LocalDate?> = sessionRepo.earliestSessionDate
-
-    private val _backupState = MutableStateFlow(BackupState())
 
     private val _healthSyncCount = MutableStateFlow<Int?>(null)
 
@@ -69,19 +50,10 @@ class SettingsViewModel @Inject constructor(
 
     val state: StateFlow<SettingsUiData> = combine(
         repo.stream,
-        _backupState,
-        earliestSessionDate,
         _healthSyncCount,
-    ) { settings, backupState, earliestDate, healthSyncCount ->
+    ) { settings, healthSyncCount ->
         SettingsUiData(
             selectedTheme = settings.theme,
-            backupUri = settings.backupUri,
-            backupInterval = settings.backupInterval,
-            lastBackupTime = settings.lastBackupTime,
-            isBackingUp = backupState.isBackingUp,
-            isRestoring = backupState.isRestoring,
-            isExporting = backupState.isExporting,
-            backupMessage = backupState.message,
             language = settings.language,
             bodyWeightEnabled = settings.bodyWeightEnabled,
             healthConnectEnabled = settings.healthConnectEnabled,
@@ -89,18 +61,10 @@ class SettingsViewModel @Inject constructor(
             healthConnectPermissions = healthConnectManager.permissions,
             healthConnectSyncCount = healthSyncCount,
             colorPalette = settings.colorPalette,
-            earliestSessionDate = earliestDate,
         )
     }.asStateFlow(
         SettingsUiData(
             selectedTheme = Theme.System,
-            backupUri = null,
-            backupInterval = BackupInterval.Off,
-            lastBackupTime = null,
-            isBackingUp = false,
-            isRestoring = false,
-            isExporting = false,
-            backupMessage = null,
             language = Language.System,
             bodyWeightEnabled = true,
             healthConnectEnabled = false,
@@ -108,10 +72,8 @@ class SettingsViewModel @Inject constructor(
             healthConnectPermissions = emptySet(),
             healthConnectSyncCount = null,
             colorPalette = ColorPalette.Material,
-            earliestSessionDate = null,
         ),
     )
-
     fun updateTheme(theme: Theme) {
         launchCatching {
             repo.setTheme(theme)
@@ -161,135 +123,12 @@ class SettingsViewModel @Inject constructor(
             _healthSyncCount.value = healthConnectManager.syncAll(dtos)
         }
     }
-
-    fun setBackupLocation(uri: Uri) {
-        launchCatching {
-            repo.setBackupUri(uri.toString())
-            backupManager.schedulePeriodicBackup(state.value.backupInterval, uri)
-        }
-    }
-
-    fun setBackupInterval(interval: BackupInterval) {
-        launchCatching {
-            repo.setBackupInterval(interval)
-            val backupUri = state.value.backupUri?.toUri()
-            if (backupUri != null) {
-                backupManager.schedulePeriodicBackup(interval, backupUri)
-            }
-        }
-    }
-
-    fun backupNow() {
-        val backupUri = state.value.backupUri?.toUri() ?: return
-
-        viewModelScope.launch {
-            try {
-                _backupState.update { it.copy(isBackingUp = true, message = null) }
-
-                when (backupManager.createBackup(backupUri)) {
-                    is BackupResult.Success -> {
-                        repo.setLastBackupTime(Clock.System.now())
-                        _backupState.update {
-                            it.copy(isBackingUp = false, message = BackupMessage.BackupSuccess)
-                        }
-                    }
-
-                    is BackupResult.Error -> {
-                        _backupState.update {
-                            it.copy(isBackingUp = false, message = BackupMessage.BackupFailed)
-                        }
-                    }
-                }
-            } catch (e: Exception) {
-                _backupState.update { it.copy(isBackingUp = false) }
-                emitError(e)
-            }
-        }
-    }
-
-    fun restore(uri: Uri) {
-        viewModelScope.launch {
-            try {
-                _backupState.update { it.copy(isRestoring = true, message = null) }
-
-                when (backupManager.restoreBackup(uri)) {
-                    is BackupResult.Success -> {
-                        repo.setBackupUri(null)
-                        repo.setLastBackupTime(null)
-                        _backupState.update {
-                            it.copy(isRestoring = false, message = BackupMessage.RestoreSuccess)
-                        }
-                    }
-
-                    is BackupResult.Error -> {
-                        _backupState.update {
-                            it.copy(isRestoring = false, message = BackupMessage.RestoreFailed)
-                        }
-                    }
-                }
-            } catch (e: Exception) {
-                _backupState.update { it.copy(isRestoring = false) }
-                emitError(e)
-            }
-        }
-    }
-
-    fun exportData(options: ExportOptions, uri: Uri) {
-        viewModelScope.launch {
-            try {
-                _backupState.update { it.copy(isExporting = true, message = null) }
-
-                when (exportManager.export(options, uri)) {
-                    is BackupResult.Success -> {
-                        _backupState.update {
-                            it.copy(isExporting = false, message = BackupMessage.ExportSuccess)
-                        }
-                    }
-
-                    is BackupResult.Error -> {
-                        _backupState.update {
-                            it.copy(isExporting = false, message = BackupMessage.ExportFailed)
-                        }
-                    }
-                }
-            } catch (e: Exception) {
-                _backupState.update { it.copy(isExporting = false) }
-                emitError(e)
-            }
-        }
-    }
-
-    fun clearBackupMessage() {
-        _backupState.update { it.copy(message = null) }
-    }
 }
 
-private data class BackupState(
-    val isBackingUp: Boolean = false,
-    val isRestoring: Boolean = false,
-    val isExporting: Boolean = false,
-    val message: BackupMessage? = null,
-)
-
-enum class BackupMessage {
-    BackupSuccess,
-    BackupFailed,
-    RestoreSuccess,
-    RestoreFailed,
-    ExportSuccess,
-    ExportFailed,
-}
 
 @Stable
 data class SettingsUiData(
     val selectedTheme: Theme,
-    val backupUri: String?,
-    val backupInterval: BackupInterval,
-    val lastBackupTime: Instant?,
-    val isBackingUp: Boolean,
-    val isRestoring: Boolean,
-    val isExporting: Boolean,
-    val backupMessage: BackupMessage?,
     val language: Language,
     val bodyWeightEnabled: Boolean,
     val healthConnectEnabled: Boolean,
@@ -297,5 +136,4 @@ data class SettingsUiData(
     val healthConnectPermissions: Set<String>,
     val healthConnectSyncCount: Int?,
     val colorPalette: ColorPalette,
-    val earliestSessionDate: LocalDate?,
 )

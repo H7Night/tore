@@ -29,11 +29,7 @@ interface SettingsRepo {
 
     fun <T> get(block: Settings.() -> T): Flow<T>
 
-    suspend fun setOnboardingDone()
-
     suspend fun setTheme(theme: Theme)
-
-    suspend fun setLastSetTime(instant: Instant?)
 
     suspend fun setBackupUri(uri: String?)
 

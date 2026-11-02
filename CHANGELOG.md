@@ -8,7 +8,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Exercise progress page: open any exercise from the browse list to see its heaviest weight, estimated 1RM (Epley), best set, and total volume over time, with a per-session history
 - Calendar view of training history: days with a workout are highlighted and open the session detail
 - Editing a past workout record now lets you add exercises that are not part of the plan
 - Adding exercises now supports multi-select; exercises not in the plan can be added to a workout and appear even before any set is logged
@@ -32,7 +31,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The Profile tab is now labelled Profile, and icon-only actions show Material 3 long-press tooltips
 
 ### Fixed
-- Bodyweight exercises now count toward progress correctly: pure bodyweight sets use the body weight recorded nearest to that session, weighted sets add the extra weight, and legacy sets logged before the bodyweight option existed are corrected on upgrade
+- Failed actions now show an error snackbar instead of failing silently
+- Deleting a tag now shows the correct number of exercises that use it
+- Date labels no longer shift by one day in time zones west of UTC
+- Data export now runs off the main thread
+- Legacy bodyweight sets logged before the bodyweight option existed are corrected on upgrade
 - Adding an exercise during a workout no longer shows it twice (one row with sets and one empty row at its original position)
 - Completed timer-only workouts without sets (e.g. cardio) are no longer missing from Records and the calendar
 - The status-bar inset is no longer applied twice, removing the extra gap at the top of every screen

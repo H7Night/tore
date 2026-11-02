@@ -19,6 +19,7 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -150,8 +151,6 @@ private fun Sessions(
     modifier: Modifier = Modifier,
 ) {
     var sessionToDelete by remember { mutableStateOf<SessionSummary?>(null) }
-    var planExpanded by remember { mutableStateOf(false) }
-    var dayExpanded by remember { mutableStateOf(false) }
     var selectedPlan by remember { mutableStateOf<Plan?>(null) }
     var selectedDay by remember { mutableStateOf<Int?>(null) }
     var weekOnly by rememberSaveable(initialWeekOnly) { mutableStateOf(initialWeekOnly) }
@@ -177,26 +176,13 @@ private fun Sessions(
 
     if (sessionToDelete != null) {
         val deletedMessage = stringResource(R.string.label_deleted)
-        AlertDialog(
-            onDismissRequest = { sessionToDelete = null },
-            title = { Text(text = stringResource(R.string.label_delete_session_title)) },
-            text = { Text(text = stringResource(R.string.label_delete_session_message)) },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        sessionToDelete?.let { onRemoveSession(it) }
-                        context.toast(deletedMessage)
-                        sessionToDelete = null
-                    },
-                ) {
-                    Text(text = stringResource(R.string.label_confirm))
-                }
+        DeleteSessionDialog(
+            onConfirm = {
+                sessionToDelete?.let { onRemoveSession(it) }
+                context.toast(deletedMessage)
+                sessionToDelete = null
             },
-            dismissButton = {
-                TextButton(onClick = { sessionToDelete = null }) {
-                    Text(text = stringResource(R.string.label_cancel))
-                }
-            },
+            onDismiss = { sessionToDelete = null },
         )
     }
 
@@ -250,114 +236,30 @@ private fun Sessions(
                     .padding(padding)
                     .padding(horizontal = 12.dp),
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .horizontalScroll(rememberScrollState())
-                        .padding(vertical = 4.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Box {
-                        FilterChip(
-                            selected = selectedPlan != null,
-                            onClick = { planExpanded = true },
-                            label = { Text(selectedPlanName) },
-                            trailingIcon = {
-                                Icon(
-                                    imageVector = Icons.Default.ArrowDropDown,
-                                    contentDescription = null,
-                                )
-                            },
-                        )
-                        DropdownMenu(
-                            expanded = planExpanded,
-                            onDismissRequest = { planExpanded = false },
-                        ) {
-                            DropdownMenuItem(
-                                text = { Text(stringResource(R.string.label_all_plans)) },
-                                onClick = {
-                                    selectedPlan = null
-                                    selectedDay = null
-                                    planExpanded = false
-                                },
-                            )
-                            state.plans.forEach { plan ->
-                                DropdownMenuItem(
-                                    text = { Text(plan.name) },
-                                    onClick = {
-                                        selectedPlan = plan
-                                        selectedDay = null
-                                        planExpanded = false
-                                    },
-                                )
-                            }
-                        }
-                    }
-                    FilterChip(
-                        selected = weekOnly,
-                        onClick = { weekOnly = !weekOnly },
-                        label = { Text(stringResource(R.string.label_stat_week)) },
-                    )
-                    if (selectedPlan != null) {
-                        Box {
-                            FilterChip(
-                                selected = selectedDay != null,
-                                onClick = { dayExpanded = true },
-                                label = { Text(selectedDayName) },
-                                trailingIcon = {
-                                    Icon(
-                                        imageVector = Icons.Default.ArrowDropDown,
-                                        contentDescription = null,
-                                    )
-                                },
-                            )
-                            DropdownMenu(
-                                expanded = dayExpanded,
-                                onDismissRequest = { dayExpanded = false },
-                            ) {
-                                availableDays.forEach { (day, title) ->
-                                    DropdownMenuItem(
-                                        text = { Text(title) },
-                                        onClick = {
-                                            selectedDay = day
-                                            dayExpanded = false
-                                        },
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
+                SessionFilterRow(
+                    plans = state.plans,
+                    selectedPlan = selectedPlan,
+                    selectedPlanName = selectedPlanName,
+                    availableDays = availableDays,
+                    selectedDay = selectedDay,
+                    selectedDayName = selectedDayName,
+                    weekOnly = weekOnly,
+                    onSelectPlan = { plan ->
+                        selectedPlan = plan
+                        selectedDay = null
+                    },
+                    onSelectDay = { selectedDay = it },
+                    onToggleWeekOnly = { weekOnly = !weekOnly },
+                )
                 if (filteredSessions.isEmpty()) {
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxWidth()
-                            .padding(bottom = 48.dp),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            EmptyState(
-                                icon = Icons.Rounded.History,
-                                text = stringResource(R.string.label_no_sessions),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 24.dp),
-                            )
-                            if (selectedPlan != null || selectedDay != null || weekOnly) {
-                                TextButton(
-                                    onClick = {
-                                        selectedPlan = null
-                                        selectedDay = null
-                                        weekOnly = false
-                                    },
-                                ) {
-                                    Text(stringResource(R.string.label_clear_filters))
-                                }
-                            }
-                        }
-                    }
+                    FilteredEmptyState(
+                        hasActiveFilters = selectedPlan != null || selectedDay != null || weekOnly,
+                        onClearFilters = {
+                            selectedPlan = null
+                            selectedDay = null
+                            weekOnly = false
+                        },
+                    )
                 } else {
                     LazyColumn(
                         modifier = Modifier
@@ -380,6 +282,154 @@ private fun Sessions(
                             )
                         }
                     }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun DeleteSessionDialog(
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(text = stringResource(R.string.label_delete_session_title)) },
+        text = { Text(text = stringResource(R.string.label_delete_session_message)) },
+        confirmButton = {
+            Button(onClick = onConfirm) {
+                Text(text = stringResource(R.string.label_confirm))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(text = stringResource(R.string.label_cancel))
+            }
+        },
+    )
+}
+
+/** 记录页筛选条：计划下拉、训练日下拉（选计划后出现）、本周开关。下拉展开状态只属于本组件。 */
+@Composable
+private fun SessionFilterRow(
+    plans: List<Plan>,
+    selectedPlan: Plan?,
+    selectedPlanName: String,
+    availableDays: Map<Int, String>,
+    selectedDay: Int?,
+    selectedDayName: String,
+    weekOnly: Boolean,
+    onSelectPlan: (Plan?) -> Unit,
+    onSelectDay: (Int) -> Unit,
+    onToggleWeekOnly: () -> Unit,
+) {
+    var planExpanded by remember { mutableStateOf(false) }
+    var dayExpanded by remember { mutableStateOf(false) }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState())
+            .padding(vertical = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box {
+            FilterChip(
+                selected = selectedPlan != null,
+                onClick = { planExpanded = true },
+                label = { Text(selectedPlanName) },
+                trailingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.ArrowDropDown,
+                        contentDescription = null,
+                    )
+                },
+            )
+            DropdownMenu(
+                expanded = planExpanded,
+                onDismissRequest = { planExpanded = false },
+            ) {
+                DropdownMenuItem(
+                    text = { Text(stringResource(R.string.label_all_plans)) },
+                    onClick = {
+                        onSelectPlan(null)
+                        planExpanded = false
+                    },
+                )
+                plans.forEach { plan ->
+                    DropdownMenuItem(
+                        text = { Text(plan.name) },
+                        onClick = {
+                            onSelectPlan(plan)
+                            planExpanded = false
+                        },
+                    )
+                }
+            }
+        }
+        FilterChip(
+            selected = weekOnly,
+            onClick = onToggleWeekOnly,
+            label = { Text(stringResource(R.string.label_stat_week)) },
+        )
+        if (selectedPlan != null) {
+            Box {
+                FilterChip(
+                    selected = selectedDay != null,
+                    onClick = { dayExpanded = true },
+                    label = { Text(selectedDayName) },
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.ArrowDropDown,
+                            contentDescription = null,
+                        )
+                    },
+                )
+                DropdownMenu(
+                    expanded = dayExpanded,
+                    onDismissRequest = { dayExpanded = false },
+                ) {
+                    availableDays.forEach { (day, title) ->
+                        DropdownMenuItem(
+                            text = { Text(title) },
+                            onClick = {
+                                onSelectDay(day)
+                                dayExpanded = false
+                            },
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+/** 筛选后无结果；有激活筛选时提供"清除筛选"。 */
+@Composable
+private fun ColumnScope.FilteredEmptyState(
+    hasActiveFilters: Boolean,
+    onClearFilters: () -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .weight(1f)
+            .fillMaxWidth()
+            .padding(bottom = 48.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            EmptyState(
+                icon = Icons.Rounded.History,
+                text = stringResource(R.string.label_no_sessions),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 24.dp),
+            )
+            if (hasActiveFilters) {
+                TextButton(onClick = onClearFilters) {
+                    Text(stringResource(R.string.label_clear_filters))
                 }
             }
         }

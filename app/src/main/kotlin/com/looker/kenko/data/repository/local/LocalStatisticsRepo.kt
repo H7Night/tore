@@ -13,10 +13,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.looker.kenko.data.repository
+package com.looker.kenko.data.repository.local
 
-import com.looker.kenko.data.local.dao.SetsDao
+import com.looker.kenko.data.repository.ExerciseRepo
+import com.looker.kenko.data.repository.PlanRepo
 import com.looker.kenko.data.repository.SessionRepo
+import com.looker.kenko.data.repository.StatisticsRepo
+import com.looker.kenko.data.repository.StatisticsTiming
+import com.looker.kenko.data.repository.TagRepo
 import com.looker.kenko.di.ApplicationScope
 import com.looker.kenko.di.DefaultDispatcher
 import com.looker.kenko.domain.model.Exercise
@@ -41,7 +45,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.datetime.LocalDate
 
 /**
  * 统计页数据管道（应用作用域单例）：
@@ -52,19 +55,18 @@ import kotlinx.datetime.LocalDate
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 @Singleton
-class StatisticsRepository @Inject constructor(
+class LocalStatisticsRepo @Inject constructor(
     private val sessionRepo: SessionRepo,
-    private val setsDao: SetsDao,
     private val exerciseRepo: ExerciseRepo,
     private val tagRepo: TagRepo,
     private val planRepo: PlanRepo,
     @ApplicationScope private val appScope: CoroutineScope,
     @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher,
-) {
+) : StatisticsRepo {
     @Volatile
     private var hasEmitted = false
 
-    val state: StateFlow<StatisticsUiState?> =
+    override val state: StateFlow<StatisticsUiState?> =
         combine(
             sessionRepo.streamSummaries,
             exerciseRepo.stream,
@@ -76,9 +78,7 @@ class StatisticsRepository @Inject constructor(
                 val cardioFlow = if (cardioIds.isEmpty()) {
                     flowOf(emptyMap())
                 } else {
-                    setsDao.streamCardioMinutesByDate(cardioIds).map { rows ->
-                        rows.associate { LocalDate.fromEpochDays(it.date.value.toLong()) to it.minutes }
-                    }
+                    sessionRepo.streamCardioMinutesByDate(cardioIds)
                 }
                 cardioFlow.map { cardio ->
                     val startNanos = System.nanoTime()

@@ -1,6 +1,6 @@
 package com.looker.kenko.ui.feature.statistics
 
-import com.looker.kenko.data.repository.StatisticsRepository
+import com.looker.kenko.data.repository.local.LocalStatisticsRepo
 import com.looker.kenko.domain.model.CountType
 import com.looker.kenko.domain.model.Exercise
 import com.looker.kenko.domain.model.SessionSummary
@@ -9,7 +9,6 @@ import com.looker.kenko.domain.model.today
 import com.looker.kenko.testutil.FakeExerciseRepo
 import com.looker.kenko.testutil.FakePlanRepo
 import com.looker.kenko.testutil.FakeSessionRepo
-import com.looker.kenko.testutil.FakeSetsDao
 import com.looker.kenko.testutil.FakeTagRepo
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -41,9 +40,8 @@ class StatisticsViewModelTest {
             chestTag,
             legTag,
         )
-        val repository = StatisticsRepository(
+        val repository = LocalStatisticsRepo(
             sessionRepo = FakeSessionRepo(summaries = summaries),
-            setsDao = FakeSetsDao(),
             exerciseRepo = FakeExerciseRepo(exercises = exercises),
             tagRepo = FakeTagRepo(tags = allTags),
             planRepo = FakePlanRepo(),

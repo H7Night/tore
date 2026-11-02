@@ -40,7 +40,7 @@ class StatisticsAggregationTest {
         assertEquals(1, state.weeklyCounts["胸"])
         assertEquals(1, state.weeklyCounts["腿"])
         assertEquals(40, state.cardioWeekly)
-        assertEquals(true, state.heatmapData.weeks.isNotEmpty())
+        assertEquals(setOf(today, LocalDate(2026, 9, 17)), state.sessionDates)
     }
 
     @Test

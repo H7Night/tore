@@ -20,8 +20,6 @@ import androidx.lifecycle.viewModelScope
 import com.looker.kenko.domain.model.settings.ColorPalette
 import com.looker.kenko.domain.model.settings.Language
 import com.looker.kenko.domain.model.settings.Theme
-import com.looker.kenko.domain.model.today
-import com.looker.kenko.data.repository.SessionRepo
 import com.looker.kenko.data.repository.SettingsRepo
 import com.looker.kenko.utils.asStateFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,7 +32,6 @@ import kotlinx.coroutines.flow.SharingStarted
 @HiltViewModel
 class MainViewModel @Inject constructor(
     repo: SettingsRepo,
-    sessionRepo: SessionRepo,
 ) : ViewModel() {
 
     val isReady: StateFlow<Boolean> = repo.stream
@@ -53,8 +50,4 @@ class MainViewModel @Inject constructor(
 
     val palette: StateFlow<ColorPalette> = repo.get { colorPalette }
         .asStateFlow(ColorPalette.Material)
-
-    val isExerciseVisible: StateFlow<Boolean> = sessionRepo.streamByDate(today())
-        .map { it != null && it.sets.isNotEmpty() }
-        .asStateFlow(false)
 }

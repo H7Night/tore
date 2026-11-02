@@ -49,11 +49,15 @@ import androidx.compose.ui.unit.dp
 import androidx.health.connect.client.PermissionController
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.looker.kenko.R
-import com.looker.kenko.domain.model.settings.BackupInterval
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.looker.kenko.ui.feature.backup.BackupUiData
+import com.looker.kenko.ui.feature.backup.BackupViewModel
 import com.looker.kenko.domain.model.settings.ColorPalette
 import com.looker.kenko.domain.model.settings.Language
 import com.looker.kenko.domain.model.settings.Theme
 import com.looker.kenko.ui.component.BackButton
+import com.looker.kenko.ui.extension.labelRes
+import com.looker.kenko.ui.extension.nameRes
 import com.looker.kenko.utils.toFormat
 import com.looker.kenko.ui.component.SelectionDialog
 import com.looker.kenko.ui.component.SettingsGroup
@@ -69,10 +73,13 @@ fun Settings(
     onTagManagementClick: () -> Unit,
     onBackupClick: () -> Unit,
     onAboutClick: () -> Unit,
+    backupViewModel: BackupViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val backup by backupViewModel.state.collectAsStateWithLifecycle()
     Settings(
         state = state,
+        backup = backup,
         onSelectLanguage = viewModel::updateLanguage,
         onSelectTheme = viewModel::updateTheme,
         onSelectColorPalette = viewModel::updateColorPalette,
@@ -91,6 +98,7 @@ fun Settings(
 @Composable
 private fun Settings(
     state: SettingsUiData,
+    backup: BackupUiData,
     onSelectLanguage: (Language) -> Unit,
     onSelectTheme: (Theme) -> Unit,
     onSelectColorPalette: (ColorPalette) -> Unit,
@@ -260,15 +268,15 @@ private fun Settings(
                         icon = { Icon(painter = KenkoIcons.Save, contentDescription = null) },
                         title = stringResource(R.string.label_backup),
                         subtitle = when {
-                            state.isBackingUp -> stringResource(R.string.label_backup_in_progress)
-                            state.lastBackupTime != null -> stringResource(
+                            backup.isBackingUp -> stringResource(R.string.label_backup_in_progress)
+                            backup.lastBackupTime != null -> stringResource(
                                 R.string.label_last_backup,
-                                state.lastBackupTime.toFormat(),
+                                backup.lastBackupTime.toFormat(),
                             )
 
-                            state.backupUri != null -> stringResource(
+                            backup.backupUri != null -> stringResource(
                                 R.string.label_backup_folder,
-                                extractFolderName(state.backupUri),
+                                extractFolderName(backup.backupUri),
                             )
 
                             else -> stringResource(R.string.label_backup_location_not_set)
@@ -298,13 +306,6 @@ private fun SettingsPreview() {
         Settings(
             state = SettingsUiData(
                 selectedTheme = Theme.System,
-                backupUri = null,
-                backupInterval = BackupInterval.Off,
-                lastBackupTime = null,
-                isBackingUp = false,
-                isRestoring = false,
-                isExporting = false,
-                backupMessage = null,
                 language = Language.System,
                 bodyWeightEnabled = true,
                 healthConnectEnabled = false,
@@ -312,8 +313,8 @@ private fun SettingsPreview() {
                 healthConnectPermissions = emptySet(),
                 healthConnectSyncCount = null,
                 colorPalette = ColorPalette.Material,
-                earliestSessionDate = null,
             ),
+            backup = BackupUiData(),
             onSelectLanguage = {},
             onSelectTheme = {},
             onSelectColorPalette = {},

@@ -92,10 +92,6 @@ class SelectExerciseViewModel @Inject constructor(
         }
     }.asStateFlow(SearchResult.Loading)
 
-    fun setSearch(value: String) {
-        searchQuery.value = value
-    }
-
     fun setParentFilter(parentId: Int?) {
         selectedParentId.value = parentId
         selectedChildId.value = null

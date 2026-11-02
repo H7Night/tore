@@ -190,6 +190,11 @@ class LocalSessionRepo @Inject constructor(
         dao.setEndedAt(sessionId, endedAtMillis)
     }
 
+    override fun streamCardioMinutesByDate(exerciseIds: List<Int>): Flow<Map<LocalDate, Int>> =
+        setsDao.streamCardioMinutesByDate(exerciseIds).map { rows ->
+            rows.associate { LocalDate.fromEpochDays(it.date.value.toLong()) to it.minutes }
+        }
+
     override fun streamSessionExerciseIds(sessionId: Int): Flow<List<Int>> =
         dao.streamSessionExerciseIds(sessionId)
 

@@ -44,7 +44,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -72,14 +74,12 @@ fun TagManagementScreen(
     var showAddChildDialog by remember { mutableStateOf<Int?>(null) }
     var showEditDialog by remember { mutableStateOf<Tag?>(null) }
     var showDeleteConfirm by remember { mutableStateOf<Tag?>(null) }
-    var deleteWarning by remember { mutableStateOf<String?>(null) }
 
     // Delete confirmation dialog
     showDeleteConfirm?.let { tag ->
-        val exerciseCount = remember(tag.id) {
-            var count = 0
-            viewModel.exerciseCount(tag.id) { count = it }
-            count
+        var exerciseCount by remember(tag.id) { mutableIntStateOf(0) }
+        LaunchedEffect(tag.id) {
+            exerciseCount = viewModel.exerciseCount(tag.id)
         }
         AlertDialog(
             onDismissRequest = { showDeleteConfirm = null },

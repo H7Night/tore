@@ -16,7 +16,6 @@
 package com.looker.kenko.ui.feature.session
 
 import androidx.compose.runtime.Stable
-import com.looker.kenko.domain.model.Session
 import com.looker.kenko.domain.model.today
 import com.looker.kenko.data.repository.SessionRepo
 import com.looker.kenko.data.repository.PlanRepo

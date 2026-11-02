@@ -35,7 +35,6 @@ fun NavGraphBuilder.exercises(
     onExerciseClick: (id: Int?) -> Unit,
     onCreateClick: () -> Unit,
     onBackPress: () -> Unit,
-    onProgressClick: (Int) -> Unit,
 ) {
     composable<ExercisesRoute>(
         deepLinks = listOf(navDeepLink { uriPattern = "kenko://exercises" }),
@@ -44,7 +43,6 @@ fun NavGraphBuilder.exercises(
             onExerciseClick = onExerciseClick,
             onCreateClick = onCreateClick,
             onBackPress = onBackPress,
-            onProgressClick = onProgressClick,
             viewModel = hiltViewModel(),
         )
     }

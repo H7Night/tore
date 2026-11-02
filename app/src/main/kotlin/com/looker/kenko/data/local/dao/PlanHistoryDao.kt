@@ -52,16 +52,6 @@ interface PlanHistoryDao {
         AND start IS NOT NULL
         """,
     )
-    fun currentFlow(): Flow<PlanHistoryEntity?>
-
-    @Query(
-        """
-        SELECT *
-        FROM plan_history
-        WHERE `end` IS NULL
-        AND start IS NOT NULL
-        """,
-    )
     suspend fun getCurrent(): PlanHistoryEntity?
 
     @Query(

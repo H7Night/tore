@@ -55,7 +55,7 @@ import com.looker.kenko.ui.component.BackButton
 import com.looker.kenko.ui.component.ErrorSnackbar
 import androidx.compose.material3.FilterChip
 import com.looker.kenko.domain.model.ExerciseEquipment
-import com.looker.kenko.domain.model.labelRes
+import com.looker.kenko.ui.extension.labelRes
 import com.looker.kenko.ui.component.TagSelector
 import com.looker.kenko.ui.extension.plus
 import com.looker.kenko.ui.theme.KenkoIcons

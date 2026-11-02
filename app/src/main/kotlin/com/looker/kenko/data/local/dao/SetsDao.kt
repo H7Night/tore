@@ -20,7 +20,6 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.looker.kenko.data.local.model.CardioMinutesByDate
-import com.looker.kenko.data.local.model.ExerciseSetRow
 import com.looker.kenko.data.local.model.SetEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -96,17 +95,6 @@ interface SetsDao {
         """,
     )
     fun totalSetCount(): Flow<Int>
-
-    @Query(
-        """
-        SELECT s.date AS date, st.weight AS weight, st.reps AS reps
-        FROM sets st
-        JOIN sessions s ON s.id = st.sessionId
-        WHERE st.exerciseId = :exerciseId
-        ORDER BY s.date ASC, st.`order` ASC
-        """,
-    )
-    fun streamSetsForExercise(exerciseId: Int): Flow<List<ExerciseSetRow>>
 
     @Query(
         """

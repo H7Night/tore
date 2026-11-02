@@ -15,10 +15,8 @@
 
 package com.looker.kenko.domain.model
 
-import androidx.compose.runtime.Immutable
 import kotlinx.datetime.LocalDate
 
-@Immutable
 data class Weight(
     val date: LocalDate,
     val value: Float,

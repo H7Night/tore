@@ -16,7 +16,7 @@
 package com.looker.kenko.ui.feature.statistics
 
 import androidx.lifecycle.ViewModel
-import com.looker.kenko.data.repository.StatisticsRepository
+import com.looker.kenko.data.repository.StatisticsRepo
 import com.looker.kenko.domain.statistics.StatisticsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 @HiltViewModel
 class StatisticsViewModel @Inject constructor(
-    repository: StatisticsRepository,
+    repository: StatisticsRepo,
 ) : ViewModel() {
 
     /** 应用作用域缓存；`null` 表示首次结果尚未就绪（UI 显示骨架）。 */

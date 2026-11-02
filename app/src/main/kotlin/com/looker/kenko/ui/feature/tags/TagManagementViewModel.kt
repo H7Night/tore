@@ -21,21 +21,15 @@ import com.looker.kenko.ui.base.KenkoViewModel
 import com.looker.kenko.utils.asStateFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 
 @HiltViewModel
-@OptIn(ExperimentalCoroutinesApi::class)
 class TagManagementViewModel @Inject constructor(
     private val tagRepo: TagRepo,
 ) : KenkoViewModel() {
 
-    private val refreshTrigger = MutableStateFlow(0)
-
-    private val tags = refreshTrigger.flatMapLatest { tagRepo.stream }
+    private val tags = tagRepo.stream
 
     private val parents = tags.map { list -> list.filter { it.parentId == null } }
 
@@ -48,15 +42,10 @@ class TagManagementViewModel @Inject constructor(
         )
     }.asStateFlow(TagManagementUiState())
 
-    fun refresh() {
-        refreshTrigger.value++
-    }
-
     fun addParent(name: String) {
         launchCatching {
             val maxOrder = state.value.parents.maxOfOrNull { it.sortOrder } ?: 0
             tagRepo.upsert(Tag(name = name, sortOrder = maxOrder + 1))
-            refresh()
         }
     }
 
@@ -65,44 +54,22 @@ class TagManagementViewModel @Inject constructor(
             val siblings = state.value.children.filter { it.parentId == parentId }
             val maxOrder = siblings.maxOfOrNull { it.sortOrder } ?: 0
             tagRepo.upsert(Tag(name = name, parentId = parentId, sortOrder = maxOrder + 1))
-            refresh()
         }
     }
 
     fun updateTag(tag: Tag) {
         launchCatching {
             tagRepo.upsert(tag)
-            refresh()
         }
     }
 
     fun deleteTag(tag: Tag) {
         launchCatching {
             tagRepo.delete(tag)
-            refresh()
         }
     }
 
-    fun deleteTagById(id: Int) {
-        launchCatching {
-            tagRepo.deleteById(id)
-            refresh()
-        }
-    }
-
-    fun exerciseCount(tagId: Int, callback: (Int) -> Unit) {
-        launchCatching {
-            callback(tagRepo.exerciseCount(tagId))
-        }
-    }
-
-    fun updateSortOrder(tagId: Int, newOrder: Int) {
-        launchCatching {
-            val tag = tagRepo.get(tagId) ?: return@launchCatching
-            tagRepo.upsert(tag.copy(sortOrder = newOrder))
-            refresh()
-        }
-    }
+    suspend fun exerciseCount(tagId: Int): Int = tagRepo.exerciseCount(tagId)
 }
 
 data class TagManagementUiState(

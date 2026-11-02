@@ -38,7 +38,6 @@ fun NavController.navigateToHome(navOptions: NavOptions? = null) {
 
 fun NavGraphBuilder.home(
     onSelectPlanClick: () -> Unit,
-    onProfileClick: () -> Unit,
     onExploreSessionsClick: () -> Unit,
     onStartSessionClick: () -> Unit,
     onCurrentPlanClick: (Int) -> Unit,
@@ -51,7 +50,6 @@ fun NavGraphBuilder.home(
         deepLinks = listOf(navDeepLink { uriPattern = "kenko://home" }),
     ) {
         Home(
-            onProfileClick = onProfileClick,
             onSelectPlanClick = onSelectPlanClick,
             onExploreSessionsClick = onExploreSessionsClick,
             onStartSessionClick = onStartSessionClick,

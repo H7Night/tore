@@ -25,7 +25,6 @@ import com.looker.kenko.R
 import com.looker.kenko.data.StringHandler
 import com.looker.kenko.data.repository.PlanRepo
 import com.looker.kenko.domain.model.Exercise
-import com.looker.kenko.domain.model.Plan
 import com.looker.kenko.domain.model.PlanItem
 import com.looker.kenko.domain.model.titlesMap
 import com.looker.kenko.domain.model.withDayTitle

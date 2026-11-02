@@ -17,14 +17,10 @@ package com.looker.kenko.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Query
-import androidx.room.RawQuery
 import androidx.room.Transaction
 import androidx.room.Upsert
-import androidx.sqlite.db.SimpleSQLiteQuery
-import com.looker.kenko.data.local.model.ExerciseEntity
 import com.looker.kenko.data.local.model.PlanDayEntity
 import com.looker.kenko.data.local.model.PlanEntity
-import com.looker.kenko.domain.model.Labels
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -111,44 +107,6 @@ interface PlanDao {
     @Query(
         """
         SELECT *
-        FROM plans
-        WHERE id =
-        (SELECT planId
-        FROM plan_day
-        WHERE exerciseId = :exerciseId)
-        """,
-    )
-    suspend fun getPlanByExerciseId(exerciseId: Int): List<PlanEntity>
-
-    @Transaction
-    @Query(
-        """
-        SELECT exercises.*
-        FROM exercises
-        INNER JOIN plan_day
-        ON exercises.id = plan_day.exerciseId
-        WHERE plan_day.planId = :planId
-        ORDER BY plan_day.sortOrder ASC
-        """,
-    )
-    fun exerciseByPlanIdFlow(planId: Int): Flow<List<ExerciseEntity>>
-
-    @Transaction
-    @Query(
-        """
-        SELECT exercises.*
-        FROM exercises
-        INNER JOIN plan_day
-        ON exercises.id = plan_day.exerciseId
-        WHERE plan_day.planId = :planId
-        ORDER BY plan_day.sortOrder ASC
-        """,
-    )
-    suspend fun getExerciseByPlanId(planId: Int): List<ExerciseEntity>
-
-    @Query(
-        """
-        SELECT *
         FROM plan_day
         WHERE planId = :planId
         AND dayIndex = :day
@@ -185,49 +143,6 @@ interface PlanDao {
         """,
     )
     suspend fun getWorkDaysByPlanId(planId: Int): Int
-
-    suspend fun searchPlans(
-        query: String? = null,
-        difficulty: Labels.Difficulty? = null,
-        focus: Labels.Focus? = null,
-        equipment: Labels.Equipment? = null,
-        time: Labels.Time? = null,
-    ): List<PlanEntity> {
-        val args = mutableListOf<Any?>()
-        val sql = buildString(256) {
-            append("SELECT * FROM plans WHERE 1=1 ")
-            if (!query.isNullOrBlank()) {
-                append("AND name LIKE %?% OR description LIKE %?% ")
-                args.add(query)
-                args.add(query)
-            }
-            if (difficulty != null) {
-                append("AND difficulty = ? ")
-                args.add(difficulty)
-            }
-            if (focus != null) {
-                append("AND focus = ? ")
-                args.add(focus)
-            }
-            if (equipment != null) {
-                append("AND equipment = ? ")
-                args.add(equipment)
-            }
-            if (time != null) {
-                append("AND time = ? ")
-                args.add(time)
-            }
-        }
-        return _rawSearchPlans(
-            SimpleSQLiteQuery(
-                query = sql,
-                bindArgs = args.toTypedArray(),
-            ),
-        )
-    }
-
-    @RawQuery
-    suspend fun _rawSearchPlans(query: SimpleSQLiteQuery): List<PlanEntity>
 
     @Upsert
     suspend fun upsertPlan(plan: PlanEntity): Long

@@ -15,15 +15,9 @@
 
 package com.looker.kenko.domain.model.settings
 
-import androidx.annotation.StringRes
-import com.looker.kenko.R
-
-enum class BackupInterval(
-    val hours: Long,
-    @param:StringRes val nameRes: Int,
-) {
-    Off(0, R.string.label_backup_off),
-    Daily(24, R.string.label_backup_daily),
-    Weekly(168, R.string.label_backup_weekly),
-    Monthly(720, R.string.label_backup_monthly),
+enum class BackupInterval(val hours: Long) {
+    Off(0),
+    Daily(24),
+    Weekly(168),
+    Monthly(720),
 }

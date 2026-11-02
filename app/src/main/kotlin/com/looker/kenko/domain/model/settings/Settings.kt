@@ -18,9 +18,7 @@ package com.looker.kenko.domain.model.settings
 import kotlin.time.Instant
 
 data class Settings(
-    val isOnboardingDone: Boolean,
     val theme: Theme,
-    val lastSetTime: Instant?,
     val backupUri: String?,
     val backupInterval: BackupInterval,
     val lastBackupTime: Instant?,

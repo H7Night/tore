@@ -37,25 +37,6 @@ interface SessionDao {
 
     @Query(
         """
-        SELECT EXISTS
-        (SELECT *
-        FROM sessions
-        WHERE date = :date)
-        """,
-    )
-    suspend fun sessionExistsOn(date: EpochDays): Boolean
-
-    @Query(
-        """
-        SELECT date
-        FROM sessions
-        WHERE id = :sessionId
-        """,
-    )
-    suspend fun getDatePerformedOn(sessionId: Int): EpochDays
-
-    @Query(
-        """
         SELECT MIN(date)
         FROM sessions
         """,

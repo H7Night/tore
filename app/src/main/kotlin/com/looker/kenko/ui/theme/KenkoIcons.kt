@@ -44,10 +44,6 @@ object KenkoIcons {
         @Composable
         get() = painterResource(R.drawable.ic_arrow_outward)
 
-    val Circle: Painter
-        @Composable
-        get() = painterResource(R.drawable.ic_radio_button_unchecked)
-
     val Lightbulb: Painter
         @Composable
         get() = painterResource(R.drawable.ic_lightbulb)
@@ -67,10 +63,6 @@ object KenkoIcons {
     val History: Painter
         @Composable
         get() = painterResource(R.drawable.ic_history)
-
-    val Delete: Painter
-        @Composable
-        get() = painterResource(R.drawable.ic_delete)
 
     val Remove: Painter
         @Composable

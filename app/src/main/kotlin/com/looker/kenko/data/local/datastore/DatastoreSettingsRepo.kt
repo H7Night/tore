@@ -22,7 +22,6 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.looker.kenko.BuildConfig
 import com.looker.kenko.domain.model.settings.BackupInterval
 import com.looker.kenko.domain.model.settings.ColorPalette
 import com.looker.kenko.domain.model.settings.Language
@@ -48,24 +47,8 @@ class DatastoreSettingsRepo @Inject constructor(
         return stream.map { it.block() }
     }
 
-    override suspend fun setOnboardingDone() {
-        if (!BuildConfig.DEBUG) {
-            ONBOARDING_DONE.update(true)
-        }
-    }
-
     override suspend fun setTheme(theme: Theme) {
         THEME.update(theme.name)
-    }
-
-    override suspend fun setLastSetTime(instant: Instant?) {
-        dataStore.edit { preference ->
-            if (instant != null) {
-                preference[LAST_SET_TIME_SECONDS] = instant.epochSeconds
-            } else {
-                preference.remove(LAST_SET_TIME_SECONDS)
-            }
-        }
     }
 
     override suspend fun setBackupUri(uri: String?) {
@@ -115,9 +98,7 @@ class DatastoreSettingsRepo @Inject constructor(
     }
 
     private fun mapSettings(preferences: Preferences): Settings {
-        val isOnboardingDone = preferences[ONBOARDING_DONE] ?: false
         val theme = preferences[THEME] ?: Theme.System.name
-        val lastSetTime = preferences[LAST_SET_TIME_SECONDS]
         val backupUri = preferences[BACKUP_URI]
         val backupInterval = preferences[BACKUP_INTERVAL] ?: BackupInterval.Off.name
         val lastBackupTime = preferences[LAST_BACKUP_TIME_SECONDS]
@@ -128,9 +109,7 @@ class DatastoreSettingsRepo @Inject constructor(
             ?.let { runCatching { ColorPalette.valueOf(it) }.getOrNull() }
             ?: ColorPalette.Material
         return Settings(
-            isOnboardingDone = isOnboardingDone,
             theme = Theme.valueOf(theme),
-            lastSetTime = lastSetTime?.let { Instant.fromEpochSeconds(it) },
             backupUri = backupUri,
             backupInterval = BackupInterval.valueOf(backupInterval),
             lastBackupTime = lastBackupTime?.let { Instant.fromEpochSeconds(it) },
@@ -142,10 +121,7 @@ class DatastoreSettingsRepo @Inject constructor(
     }
 
     private companion object Keys {
-        val ONBOARDING_DONE: Preferences.Key<Boolean> = booleanPreferencesKey("onboarding_done")
         val THEME: Preferences.Key<String> = stringPreferencesKey("theme")
-        val LAST_SET_TIME_SECONDS: Preferences.Key<Long> =
-            longPreferencesKey("last_set_time_seconds")
         val BACKUP_URI: Preferences.Key<String> = stringPreferencesKey("backup_uri")
         val BACKUP_INTERVAL: Preferences.Key<String> = stringPreferencesKey("backup_interval")
         val LAST_BACKUP_TIME_SECONDS: Preferences.Key<Long> =

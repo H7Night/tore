@@ -19,5 +19,3 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Path
 
 fun Path.moveTo(point: Offset) = moveTo(point.x, point.y)
-
-fun Path.lineTo(point: Offset) = lineTo(point.x, point.y)

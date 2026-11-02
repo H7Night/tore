@@ -17,28 +17,17 @@ package com.looker.kenko.ui.base
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
 /**
- * Base ViewModel exposing the shared one-shot snackbar channel and a
- * [launchCatching] helper that reports failures through it, removing the
- * repeated try/catch + emit boilerplate from feature ViewModels.
+ * Base ViewModel with a [launchCatching] helper that reports failures through the
+ * app-wide [AppSnackbar] channel, removing the repeated try/catch boilerplate from
+ * feature ViewModels.
  */
 abstract class KenkoViewModel : ViewModel() {
 
-    private val _snackbar = MutableSharedFlow<String>()
-
-    val snackbar: SharedFlow<String> = _snackbar.asSharedFlow()
-
-    protected suspend fun emitSnackbar(message: String) {
-        _snackbar.emit(message)
-    }
-
-    protected suspend fun emitError(error: Throwable) {
-        _snackbar.emit(error.message ?: DEFAULT_ERROR)
+    protected fun emitError(error: Throwable) {
+        AppSnackbar.show(error.message ?: DEFAULT_ERROR)
     }
 
     protected fun launchCatching(block: suspend () -> Unit) {

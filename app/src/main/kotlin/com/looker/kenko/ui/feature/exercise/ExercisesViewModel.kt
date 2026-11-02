@@ -16,7 +16,6 @@
 package com.looker.kenko.ui.feature.exercise
 
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.runtime.Stable
 import androidx.compose.ui.platform.UriHandler
 import androidx.lifecycle.viewModelScope
 import com.looker.kenko.R

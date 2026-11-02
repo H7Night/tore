@@ -66,8 +66,6 @@ import com.looker.kenko.domain.model.Weight
 import kotlinx.datetime.LocalDate
 import com.looker.kenko.ui.component.BackButton
 import com.looker.kenko.ui.component.KenkoDatePickerDialog
-import com.looker.kenko.ui.component.OutlineBorder
-import com.looker.kenko.ui.component.SecondaryBorder
 import com.looker.kenko.ui.component.TooltipIconButton
 import com.looker.kenko.ui.component.WeightLineChart
 import com.looker.kenko.ui.extension.normalizeInt

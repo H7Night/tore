@@ -28,19 +28,15 @@ import com.looker.kenko.ui.feature.backup.navigation.backup
 import com.looker.kenko.ui.feature.backup.navigation.navigateToBackup
 import com.looker.kenko.ui.feature.exercise.navigation.addEditExercise
 import com.looker.kenko.ui.feature.exercise.navigation.navigateToAddEditExercise
-import com.looker.kenko.ui.feature.exercise.navigation.exerciseProgress
-import com.looker.kenko.ui.feature.exercise.navigation.navigateToExerciseProgress
 import com.looker.kenko.ui.feature.exercise.navigation.exercises
 import com.looker.kenko.ui.feature.exercise.navigation.navigateToExercises
 import com.looker.kenko.ui.feature.home.navigation.HomeRoute
 import com.looker.kenko.ui.feature.home.navigation.home
-import com.looker.kenko.ui.feature.performance.navigation.performance
 import com.looker.kenko.ui.feature.statistics.navigation.statistics
 import com.looker.kenko.ui.feature.plan.navigation.navigateToPlanEdit
 import com.looker.kenko.ui.feature.plan.navigation.planEdit
 import com.looker.kenko.ui.feature.plan.navigation.navigateToPlans
 import com.looker.kenko.ui.feature.plan.navigation.plans
-import com.looker.kenko.ui.feature.profile.navigation.navigateToProfile
 import com.looker.kenko.ui.feature.profile.navigation.profile
 import com.looker.kenko.ui.feature.session.navigation.calendar
 import com.looker.kenko.ui.feature.session.navigation.navigateToCalendar
@@ -74,9 +70,6 @@ fun KenkoNavHost(
         popExitTransition = { detailPopExit() },
     ) {
         home(
-            onProfileClick = {
-                navController.navigateToProfile(navOptions = singleTopNavOptions)
-            },
             onSelectPlanClick = {
                 navController.navigateToPlans(navOptions = singleTopNavOptions)
             },
@@ -175,9 +168,6 @@ fun KenkoNavHost(
                 )
             },
             onBackPress = navController::popBackStackOnResume,
-            onProgressClick = { id ->
-                navController.navigateToExerciseProgress(id, navOptions = singleTopNavOptions)
-            },
         )
 
         planEdit(navController::popBackStackOnResume) { name ->
@@ -200,20 +190,11 @@ fun KenkoNavHost(
 
         addEditExercise(navController::popBackStackOnResume)
 
-        exerciseProgress(
-            onBackPress = navController::popBackStackOnResume,
-            onSessionClick = { date ->
-                navController.navigateToSessionDetail(date = date, navOptions = singleTopNavOptions)
-            },
-        )
-
         tagManagement(navController::popBackStackOnResume)
 
         backup(navController::popBackStackOnResume)
 
         about(navController::popBackStackOnResume)
-
-        performance()
     }
 }
 

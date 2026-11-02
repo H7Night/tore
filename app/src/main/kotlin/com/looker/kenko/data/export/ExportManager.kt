@@ -17,7 +17,6 @@ package com.looker.kenko.data.export
 
 import android.net.Uri
 import com.looker.kenko.data.backup.BackupResult
-
 import kotlinx.datetime.LocalDate
 
 data class ExportOptions(
@@ -27,9 +26,7 @@ data class ExportOptions(
     val exportWeights: Boolean = true,
     val startDate: LocalDate? = null,
     val endDate: LocalDate? = null,
-) {
-    val hasSelection: Boolean get() = exportSessions || exportPlans || exportExercises || exportWeights
-}
+)
 
 interface ExportManager {
     suspend fun export(options: ExportOptions, destinationUri: Uri): BackupResult

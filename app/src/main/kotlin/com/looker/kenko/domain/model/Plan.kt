@@ -15,8 +15,6 @@
 
 package com.looker.kenko.domain.model
 
-import androidx.compose.runtime.Immutable
-import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.looker.kenko.domain.model.Labels.Difficulty
 import com.looker.kenko.domain.model.Labels.Equipment
 import com.looker.kenko.domain.model.Labels.Focus
@@ -28,7 +26,6 @@ import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-@Immutable
 data class Plan(
     val name: String,
     val description: String?,
@@ -44,7 +41,6 @@ data class Plan(
     val id: Int? = null,
 )
 
-@Immutable
 data class PlanItem(
     val dayIndex: Int,
     val exercise: Exercise,
@@ -72,40 +68,3 @@ fun Plan.withDayTitle(dayIndex: Int, title: String?): Plan {
 }
 
 fun today(): LocalDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
-
-class PlanPreviewParameters : PreviewParameterProvider<List<Plan>> {
-    override val values: Sequence<List<Plan>> = sequenceOf(
-        listOf(
-            Plan(
-                name = "Push Pull Leg",
-                description = null,
-                difficulty = Difficulty.ADAPTABLE,
-                focus = null,
-                equipment = Equipment.FULL_GYM,
-                time = Time.NORMAL,
-                isActive = true,
-                stat = PlanStat(21, 5),
-            ),
-            Plan(
-                name = "Upper Lower",
-                description = "Alternative upper lower split",
-                difficulty = Difficulty.BEGINNER,
-                focus = Focus.POWER_BUILDING,
-                equipment = Equipment.FULL_GYM,
-                time = Time.QUICK,
-                isActive = false,
-                stat = PlanStat(21, 4),
-            ),
-            Plan(
-                name = "Upper Lower 2",
-                description = "Lower Upper split at home",
-                difficulty = Difficulty.ADAPTABLE,
-                focus = Focus.POWER_BUILDING,
-                equipment = Equipment.DUMBBELLS,
-                time = Time.QUICK,
-                isActive = false,
-                stat = PlanStat(21, 5),
-            ),
-        ),
-    )
-}
