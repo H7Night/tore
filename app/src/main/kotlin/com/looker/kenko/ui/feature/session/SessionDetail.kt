@@ -336,63 +336,26 @@ private fun SetsList(
     var setToDelete by remember { mutableStateOf<Int?>(null) }
 
     if (showImportDialog) {
-        AlertDialog(
-            onDismissRequest = { showImportDialog = false },
-            title = { Text(text = stringResource(R.string.label_modify_plan)) },
-            text = { Text(text = stringResource(R.string.label_modify_plan_message)) },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        onClearSets()
-                        showImportDialog = false
-                        showImportSheet = true
-                    },
-                ) {
-                    Text(text = stringResource(R.string.label_yes))
-                }
+        ConfirmImportDialog(
+            onConfirm = {
+                onClearSets()
+                showImportDialog = false
+                showImportSheet = true
             },
-            dismissButton = {
-                TextButton(onClick = { showImportDialog = false }) {
-                    Text(text = stringResource(R.string.label_no))
-                }
-            }
+            onDismiss = { showImportDialog = false },
         )
     }
 
     if (showImportSheet) {
-        ModalBottomSheet(
-            onDismissRequest = { showImportSheet = false },
-            containerColor = MaterialTheme.colorScheme.surface,
-        ) {
-            Text(
-                text = stringResource(R.string.label_import_plan),
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(16.dp)
-            )
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                contentPadding = PaddingValues(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.padding(bottom = 32.dp)
-            ) {
-                availablePlanDays.toSortedMap().forEach { (day, exercises) ->
-                    item {
-                        Button(
-                            onClick = {
-                                onImportDay(day)
-                                showImportSheet = false
-                            },
-                            shape = MaterialTheme.shapes.large,
-                            contentPadding = PaddingValues(vertical = 12.dp)
-                        ) {
-                            val title = dayTitles[day]
-                            Text(text = if (title.isNullOrBlank()) stringResource(R.string.label_day_n, day) else title)
-                        }
-                    }
-                }
-            }
-        }
+        ImportDaySheet(
+            availablePlanDays = availablePlanDays,
+            dayTitles = dayTitles,
+            onImportDay = { day ->
+                onImportDay(day)
+                showImportSheet = false
+            },
+            onDismiss = { showImportSheet = false },
+        )
     }
 
     if (showAddExerciseDialog) {
@@ -427,65 +390,15 @@ private fun SetsList(
                 onBackPress = onBackPress,
                 showBackButton = showBackButton,
                 actions = {
-                    if (isToday) {
-                        TooltipIconButton(
-                            tooltip = stringResource(R.string.label_add_exercise),
-                            onClick = { showAddExerciseDialog = true },
-                        ) {
-                            Icon(
-                                imageVector = Icons.Rounded.FitnessCenter,
-                                contentDescription = stringResource(R.string.label_add_exercise),
-                            )
-                        }
-                        TooltipIconButton(
-                            tooltip = stringResource(R.string.label_change_plan),
-                            onClick = { showImportDialog = true },
-                        ) {
-                            Icon(
-                                imageVector = Icons.Rounded.SwapHoriz,
-                                contentDescription = stringResource(R.string.label_change_plan),
-                            )
-                        }
-                    } else if (isEditMode) {
-                        // 历史记录:进入编辑模式后也可添加动作(含计划里没有的动作)
-                        TooltipIconButton(
-                            tooltip = stringResource(R.string.label_add_exercise),
-                            onClick = { showAddExerciseDialog = true },
-                        ) {
-                            Icon(
-                                imageVector = Icons.Rounded.FitnessCenter,
-                                contentDescription = stringResource(R.string.label_add_exercise),
-                            )
-                        }
-                    }
-
-                    if (isToday && previousSessionDate != null) {
-                        TooltipIconButton(
-                            tooltip = stringResource(R.string.label_previous_session),
-                            onClick = onHistoryClick,
-                        ) {
-                            Icon(
-                                painter = KenkoIcons.History,
-                                contentDescription = stringResource(R.string.label_previous_session),
-                            )
-                        }
-                    }
-
-                    if (!isToday) {
-                        val editLabel = stringResource(
-                            if (isEditMode) R.string.label_confirm
-                            else R.string.label_edit_record,
-                        )
-                        TooltipIconButton(
-                            tooltip = editLabel,
-                            onClick = onEditToggle,
-                        ) {
-                            Icon(
-                                painter = if (isEditMode) KenkoIcons.Done else KenkoIcons.Rename,
-                                contentDescription = editLabel,
-                            )
-                        }
-                    }
+                    SessionHeaderActions(
+                        isToday = isToday,
+                        isEditMode = isEditMode,
+                        hasPreviousSession = previousSessionDate != null,
+                        onAddExerciseClick = { showAddExerciseDialog = true },
+                        onChangePlanClick = { showImportDialog = true },
+                        onHistoryClick = onHistoryClick,
+                        onEditToggle = onEditToggle,
+                    )
                 },
             )
         }
@@ -520,34 +433,13 @@ private fun SetsList(
                         }
                     }
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    ExerciseHeaderActions(
                         // 手动添加的动作可移除
-                        if (exercise.id in extraExerciseIds && (isToday || isEditMode)) {
-                            TooltipIconButton(
-                                tooltip = stringResource(R.string.label_remove),
-                                onClick = { onRemoveExtraExercise(exercise) },
-                            ) {
-                                Icon(
-                                    painter = KenkoIcons.Remove,
-                                    contentDescription = stringResource(R.string.label_remove),
-                                )
-                            }
-                        }
-                        if (isEditMode) {
-                            FilledTonalIconButton(
-                                shapes = IconButtonShapes(
-                                    shape = MaterialShapes.Circle.toShape(),
-                                    pressedShape = MaterialShapes.Cookie6Sided.toShape(),
-                                ),
-                                onClick = { onSelectBottomSheet(exercise) },
-                            ) {
-                                Icon(
-                                    painter = KenkoIcons.Add,
-                                    contentDescription = stringResource(R.string.label_add_set),
-                                )
-                            }
-                        }
-                    }
+                        canRemove = exercise.id in extraExerciseIds && (isToday || isEditMode),
+                        canAddSet = isEditMode,
+                        onRemove = { onRemoveExtraExercise(exercise) },
+                        onAddSet = { onSelectBottomSheet(exercise) },
+                    )
                 }
             }
             if (!isCollapsed && sets.isNotEmpty()) {
@@ -555,45 +447,12 @@ private fun SetsList(
                     key = "sets-${exercise.id ?: exercise.name}",
                     span = { GridItemSpan(maxLineSpan) },
                 ) {
-                    // 同一动作的组放在一张卡片里,行间用细分隔线,避免每组一张大卡。
-                    Surface(
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp),
-                        shape = MaterialTheme.shapes.small,
-                        color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                    ) {
-                        Column {
-                            sets.forEachIndexed { index, set ->
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                ) {
-                                    SetItem(
-                                        set = set,
-                                        showContainer = false,
-                                        modifier = Modifier.weight(1f),
-                                        isEditMode = isEditMode,
-                                        onRepsUpdate = { onUpdateSet(set.id, it, set.weight) },
-                                        onWeightUpdate = { onUpdateSet(set.id, set.repsOrDuration, it) },
-                                        title = {
-                                            Text(normalizeInt(index + 1))
-                                        },
-                                    )
-                                    if (isEditMode) {
-                                        DeleteIconButton(
-                                            onClick = { set.id?.let { setToDelete = it } },
-                                        )
-                                    }
-                                }
-                                if (index != sets.lastIndex) {
-                                    HorizontalDivider(
-                                        modifier = Modifier.padding(start = 48.dp, end = 12.dp),
-                                        thickness = 1.dp,
-                                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
-                                    )
-                                }
-                            }
-                        }
-                    }
+                    ExerciseSetsCard(
+                        sets = sets,
+                        isEditMode = isEditMode,
+                        onUpdateSet = onUpdateSet,
+                        onRequestDelete = { setToDelete = it },
+                    )
                 }
             }
         }
@@ -606,6 +465,225 @@ private fun SetsList(
         )
     }
 }
+
+@Composable
+private fun ConfirmImportDialog(
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(text = stringResource(R.string.label_modify_plan)) },
+        text = { Text(text = stringResource(R.string.label_modify_plan_message)) },
+        confirmButton = {
+            Button(onClick = onConfirm) {
+                Text(text = stringResource(R.string.label_yes))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(text = stringResource(R.string.label_no))
+            }
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ImportDaySheet(
+    availablePlanDays: Map<Int, List<Exercise>>,
+    dayTitles: Map<Int, String>,
+    onImportDay: (Int) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        containerColor = MaterialTheme.colorScheme.surface,
+    ) {
+        Text(
+            text = stringResource(R.string.label_import_plan),
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.padding(16.dp)
+        )
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            contentPadding = PaddingValues(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.padding(bottom = 32.dp)
+        ) {
+            availablePlanDays.toSortedMap().forEach { (day, _) ->
+                item {
+                    Button(
+                        onClick = { onImportDay(day) },
+                        shape = MaterialTheme.shapes.large,
+                        contentPadding = PaddingValues(vertical = 12.dp)
+                    ) {
+                        val title = dayTitles[day]
+                        Text(text = if (title.isNullOrBlank()) stringResource(R.string.label_day_n, day) else title)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun RowScope.SessionHeaderActions(
+    isToday: Boolean,
+    isEditMode: Boolean,
+    hasPreviousSession: Boolean,
+    onAddExerciseClick: () -> Unit,
+    onChangePlanClick: () -> Unit,
+    onHistoryClick: () -> Unit,
+    onEditToggle: () -> Unit,
+) {
+    if (isToday) {
+        TooltipIconButton(
+            tooltip = stringResource(R.string.label_add_exercise),
+            onClick = onAddExerciseClick,
+        ) {
+            Icon(
+                imageVector = Icons.Rounded.FitnessCenter,
+                contentDescription = stringResource(R.string.label_add_exercise),
+            )
+        }
+        TooltipIconButton(
+            tooltip = stringResource(R.string.label_change_plan),
+            onClick = onChangePlanClick,
+        ) {
+            Icon(
+                imageVector = Icons.Rounded.SwapHoriz,
+                contentDescription = stringResource(R.string.label_change_plan),
+            )
+        }
+    } else if (isEditMode) {
+        // 历史记录:进入编辑模式后也可添加动作(含计划里没有的动作)
+        TooltipIconButton(
+            tooltip = stringResource(R.string.label_add_exercise),
+            onClick = onAddExerciseClick,
+        ) {
+            Icon(
+                imageVector = Icons.Rounded.FitnessCenter,
+                contentDescription = stringResource(R.string.label_add_exercise),
+            )
+        }
+    }
+
+    if (isToday && hasPreviousSession) {
+        TooltipIconButton(
+            tooltip = stringResource(R.string.label_previous_session),
+            onClick = onHistoryClick,
+        ) {
+            Icon(
+                painter = KenkoIcons.History,
+                contentDescription = stringResource(R.string.label_previous_session),
+            )
+        }
+    }
+
+    if (!isToday) {
+        val editLabel = stringResource(
+            if (isEditMode) R.string.label_confirm
+            else R.string.label_edit_record,
+        )
+        TooltipIconButton(
+            tooltip = editLabel,
+            onClick = onEditToggle,
+        ) {
+            Icon(
+                painter = if (isEditMode) KenkoIcons.Done else KenkoIcons.Rename,
+                contentDescription = editLabel,
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun ExerciseHeaderActions(
+    canRemove: Boolean,
+    canAddSet: Boolean,
+    onRemove: () -> Unit,
+    onAddSet: () -> Unit,
+) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        if (canRemove) {
+            TooltipIconButton(
+                tooltip = stringResource(R.string.label_remove),
+                onClick = onRemove,
+            ) {
+                Icon(
+                    painter = KenkoIcons.Remove,
+                    contentDescription = stringResource(R.string.label_remove),
+                )
+            }
+        }
+        if (canAddSet) {
+            FilledTonalIconButton(
+                shapes = IconButtonShapes(
+                    shape = MaterialShapes.Circle.toShape(),
+                    pressedShape = MaterialShapes.Cookie6Sided.toShape(),
+                ),
+                onClick = onAddSet,
+            ) {
+                Icon(
+                    painter = KenkoIcons.Add,
+                    contentDescription = stringResource(R.string.label_add_set),
+                )
+            }
+        }
+    }
+}
+
+/** 同一动作的组放在一张卡片里,行间用细分隔线,避免每组一张大卡。 */
+@Composable
+private fun ExerciseSetsCard(
+    sets: List<com.looker.kenko.domain.model.Set>,
+    isEditMode: Boolean,
+    onUpdateSet: (Int?, Int, Float) -> Unit,
+    onRequestDelete: (Int) -> Unit,
+) {
+    Surface(
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp),
+        shape = MaterialTheme.shapes.small,
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+    ) {
+        Column {
+            sets.forEachIndexed { index, set ->
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    SetItem(
+                        set = set,
+                        showContainer = false,
+                        modifier = Modifier.weight(1f),
+                        isEditMode = isEditMode,
+                        onRepsUpdate = { onUpdateSet(set.id, it, set.weight) },
+                        onWeightUpdate = { onUpdateSet(set.id, set.repsOrDuration, it) },
+                        title = {
+                            Text(normalizeInt(index + 1))
+                        },
+                    )
+                    if (isEditMode) {
+                        DeleteIconButton(
+                            onClick = { set.id?.let(onRequestDelete) },
+                        )
+                    }
+                }
+                if (index != sets.lastIndex) {
+                    HorizontalDivider(
+                        modifier = Modifier.padding(start = 48.dp, end = 12.dp),
+                        thickness = 1.dp,
+                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
+                    )
+                }
+            }
+        }
+    }
+}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
