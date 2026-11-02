@@ -32,10 +32,13 @@ import com.looker.kenko.domain.model.ExportSet
 import com.looker.kenko.domain.model.ExportWeight
 import com.looker.kenko.domain.model.Plan
 import com.looker.kenko.domain.model.Session
+import com.looker.kenko.di.IoDispatcher
 import com.looker.kenko.domain.model.Weight
 import com.looker.kenko.domain.statistics.bodyPartByName
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.OutputStreamWriter
@@ -43,6 +46,7 @@ import javax.inject.Inject
 
 class ExportManagerImpl @Inject constructor(
     @ApplicationContext private val context: Context,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     private val sessionRepo: SessionRepo,
     private val planRepo: PlanRepo,
     private val exerciseRepo: ExerciseRepo,
@@ -55,42 +59,43 @@ class ExportManagerImpl @Inject constructor(
         encodeDefaults = true
     }
 
-    override suspend fun export(options: ExportOptions, destinationUri: Uri): BackupResult {
-        return try {
-            val bodyPartByName = bodyPartByName(
-                exerciseRepo.stream.first(),
-                tagRepo.stream.first(),
-            )
-            val data = ExportData(
-                sessions = if (options.exportSessions) {
-                    val sessions = sessionRepo.stream.first().map { it.toExport(bodyPartByName) }
-                    if (options.startDate != null && options.endDate != null) {
-                        sessions.filter { it.date >= options.startDate && it.date <= options.endDate }
-                    } else {
-                        sessions
+    override suspend fun export(options: ExportOptions, destinationUri: Uri): BackupResult =
+        withContext(ioDispatcher) {
+            try {
+                val bodyPartByName = bodyPartByName(
+                    exerciseRepo.stream.first(),
+                    tagRepo.stream.first(),
+                )
+                val data = ExportData(
+                    sessions = if (options.exportSessions) {
+                        val sessions = sessionRepo.stream.first().map { it.toExport(bodyPartByName) }
+                        if (options.startDate != null && options.endDate != null) {
+                            sessions.filter { it.date >= options.startDate && it.date <= options.endDate }
+                        } else {
+                            sessions
+                        }
+                    } else null,
+                    plans = if (options.exportPlans) {
+                        planRepo.plans.first().map { it.toExport() }
+                    } else null,
+                    exercises = if (options.exportExercises) {
+                        exerciseRepo.stream.first().map { it.toExport(bodyPartByName) }
+                    } else null,
+                    weights = if (options.exportWeights) {
+                        weightRepo.weights.first().map { it.toExport() }
+                    } else null,
+                )
+                val jsonString = json.encodeToString(data)
+                context.contentResolver.openOutputStream(destinationUri)?.use { outputStream ->
+                    OutputStreamWriter(outputStream).use { writer ->
+                        writer.write(jsonString)
                     }
-                } else null,
-                plans = if (options.exportPlans) {
-                    planRepo.plans.first().map { it.toExport() }
-                } else null,
-                exercises = if (options.exportExercises) {
-                    exerciseRepo.stream.first().map { it.toExport(bodyPartByName) }
-                } else null,
-                weights = if (options.exportWeights) {
-                    weightRepo.weights.first().map { it.toExport() }
-                } else null,
-            )
-            val jsonString = json.encodeToString(data)
-            context.contentResolver.openOutputStream(destinationUri)?.use { outputStream ->
-                OutputStreamWriter(outputStream).use { writer ->
-                    writer.write(jsonString)
-                }
-            } ?: throw IllegalStateException("Cannot open output stream for $destinationUri")
-            BackupResult.Success
-        } catch (e: Exception) {
-            BackupResult.Error("Export failed: ${e.message}", e)
+                } ?: throw IllegalStateException("Cannot open output stream for $destinationUri")
+                BackupResult.Success
+            } catch (e: Exception) {
+                BackupResult.Error("Export failed: ${e.message}", e)
+            }
         }
-    }
 }
 
 private fun Session.toExport(bodyPartByName: Map<String, String?>): ExportSession = ExportSession(
