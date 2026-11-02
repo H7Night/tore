@@ -50,6 +50,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
@@ -132,6 +133,7 @@ private fun SetItemRow(
             horizontalArrangement = Arrangement.SpaceAround,
         ) {
             PerformedItem(
+                modifier = Modifier.weight(1F),
                 title = stringResource(set.exercise.repDurationStringRes),
                 performance = if (isCardio) {
                     "${set.repsOrDuration} ${stringResource(R.string.label_min)}"
@@ -146,23 +148,20 @@ private fun SetItemRow(
             if (!isCardio) {
                 // 自重动作: 重量为 0 表示纯自重(显示"自重"); 非 0 表示附加重量,显示数值。
                 if (set.exercise.isBodyweight && set.weight <= 0F) {
-                    Column(
-                        modifier = Modifier,
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        Text(
-                            text = stringResource(R.string.label_weight),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                        Text(
-                            text = stringResource(R.string.label_bodyweight_display),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onSurface,
-                        )
-                    }
+                    PerformedItem(
+                        modifier = Modifier.weight(1F),
+                        title = stringResource(R.string.label_weight),
+                        performance = stringResource(R.string.label_bodyweight_display),
+                        isEditMode = isEditMode,
+                        keyboardType = KeyboardType.Decimal,
+                        onValueUpdate = {},
+                        readOnly = true,
+                        // 中文"自重"不能走 numbers() 等宽字体(缺少 CJK 字形会竖排换行)。
+                        performanceStyle = MaterialTheme.typography.titleMedium,
+                    )
                 } else {
                     PerformedItem(
+                        modifier = Modifier.weight(1F),
                         title = stringResource(R.string.label_weight),
                         performance = "${set.weight} ${stringResource(R.string.label_weight_unit)}",
                         initialEditValue = set.weight.toString(),
@@ -186,6 +185,8 @@ private fun PerformedItem(
     keyboardType: KeyboardType,
     onValueUpdate: (String) -> Unit,
     modifier: Modifier = Modifier,
+    readOnly: Boolean = false,
+    performanceStyle: TextStyle? = null,
 ) {
     var isEditing by remember { mutableStateOf(false) }
     var textValue by remember(initialEditValue) {
@@ -201,7 +202,7 @@ private fun PerformedItem(
     Column(
         modifier = modifier
             .combinedClickable(
-                enabled = isEditMode,
+                enabled = isEditMode && !readOnly,
                 onDoubleClick = { isEditing = true },
                 onClick = { isEditing = true },
             ),
@@ -212,7 +213,7 @@ private fun PerformedItem(
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        if (isEditing) {
+        if (isEditing && !readOnly) {
             BasicTextField(
                 modifier = Modifier
                     .width(48.dp)
@@ -240,7 +241,7 @@ private fun PerformedItem(
         } else {
             Text(
                 text = performance,
-                style = MaterialTheme.typography.titleMedium.numbers(),
+                style = performanceStyle ?: MaterialTheme.typography.titleMedium.numbers(),
             )
         }
     }
