@@ -162,7 +162,6 @@ dependencies {
     implementation(libs.androidx.compose.material.icons.core)
     implementation(libs.androidx.compose.material.icons.extended)
 
-    implementation(libs.savedstate)
     implementation(libs.health.connect.client)
 
     implementation(libs.kotlinx.datetime)
@@ -193,7 +192,6 @@ dependencies {
     androidTestImplementation(libs.bundles.instrumented.test)
     androidTestImplementation(libs.room.test)
     androidTestImplementation(libs.hilt.test)
-    androidTestImplementation(libs.work.testing)
 
     kspAndroidTest(libs.hilt.test)
 }

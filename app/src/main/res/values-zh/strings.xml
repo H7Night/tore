@@ -14,19 +14,10 @@
 
 <resources>
     <!--Onboarding-->
-    <string name="label_kenko_meaning">○ 健康</string>
-    <string name="label_kenko_meaning_ALT">○ 强壮</string>
-    <string name="label_lets_go">开始使用</string>
-
+            
     <!--Home-->
     <string name="label_continue_session">继续</string>
-    <string name="label_start_session">开始计划</string>
-    <string name="label_explore_sessions">查看\n训练</string>
-    <string name="label_explore_exercises">查看\n动作</string>
-    <string name="label_add_new_exercises_home">添加\n动作</string>
-    <string name="label_current_plan_home">当前\n计划</string>
-    <string name="label_session_history_home">训练\n历史</string>
-
+                        
     <!--Sessions-->
     <string name="label_records">记录</string>
     <string name="label_all_plans">全部计划</string>
@@ -35,11 +26,9 @@
     <string name="label_delete_session_message">这将永久删除此条训练记录及其所有组数信息。</string>
     <string name="label_deleted">已删除</string>
     <string name="label_export">导出</string>
-    <string name="label_select_date_range">选择日期范围</string>
-    <string name="label_start_date">开始日期</string>
+        <string name="label_start_date">开始日期</string>
     <string name="label_end_date">结束日期</string>
-    <string name="label_export_markdown">导出为 Markdown</string>
-    <string name="label_confirm">确定</string>
+        <string name="label_confirm">确定</string>
     <string name="label_cancel">取消</string>
     <string name="label_ok">确定</string>
     <string name="label_add_history">添加记录</string>
@@ -50,8 +39,7 @@
 
     <!--Session Details-->
     <string name="label_nothing_today">今日无训练</string>
-    <string name="label_rest_day_heading">今天休息</string>
-    <string name="label_train_anyway">还是要练</string>
+        <string name="label_train_anyway">还是要练</string>
     <string name="label_missed_day">你错过今天了吗？</string>
     <string name="label_import_from_other_day">从其他计划日导入：</string>
     <string name="label_import_plan">导入计划</string>
@@ -70,27 +58,23 @@
     <!--Plans-->
     <string name="label_plans_title">计划</string>
     <string name="label_edit_plan">编辑计划</string>
-    <string name="label_selected">已选</string>
-    <string name="label_delete_plan_title">删除计划</string>
+        <string name="label_delete_plan_title">删除计划</string>
     <string name="label_delete_plan_message">确定要删除「%1$s」吗？此操作不可撤销。</string>
     <string name="no_exercises_yet">尚无动作</string>
     <string name="label_modify_plan">修改今日计划</string>
     <string name="label_modify_plan_message">是否要修改今日的训练计划？这将清空今天已有的训练数据。</string>
 
     <string name="heading_select_plan_name">选择计划名称</string>
-    <string name="heading_select_plan_items">选择动作</string>
-    <string name="desc_select_plan_name">
+        <string name="desc_select_plan_name">
         计划名称应易于记忆且不要太长。最好是唯一的，没有特殊符号。\n
         例如：推拉腿、力量循环等。
     </string>
 
     <!--Profile-->
-    <string name="label_profile_greeting">你好</string>
-    <string name="label_select_plan">选择计划</string>
+        <string name="label_select_plan">选择计划</string>
     <string name="label_select_plan_one">选择计划</string>
     <string name="label_current_plan">当前计划</string>
-    <string name="label_lifts">动作记录</string>
-    <string name="label_body_weight">体重记录</string>
+        <string name="label_body_weight">体重记录</string>
     <string name="label_body_weight_history">体重历史</string>
     <string name="label_custom_range">范围</string>
     <string name="label_custom_range_title">选择日期范围</string>
@@ -98,8 +82,7 @@
     <string name="label_add_body_weight">添加体重</string>
     <string name="label_no_weight_in_period">该时间段无体重记录</string>
     <string name="label_edit_body_weight">编辑体重</string>
-    <string name="placeholder_set_day_title">设置标题（如：胸部训练）</string>
-    <string name="label_weight_unit">kg</string>
+        <string name="label_weight_unit">kg</string>
     <string name="label_calendar">日历</string>
     <string name="label_month_training_days">本月训练 %1$d 天</string>
     <string name="label_year_month">%1$d年%2$d月</string>
@@ -134,25 +117,17 @@
     <string name="label_create_exercise">创建</string>
     <string name="label_create_exercise_name">创建「%s」</string>
     <string name="label_select_exercise">选择动作</string>
-    <string name="label_search">搜索</string>
-    <string name="label_search_tag">搜索标签</string>
-
+        
     <!--Add Exercises-->
     <string name="label_new_exercise">添加动作</string>
     <string name="label_edit_exercise">编辑</string>
-    <string name="label_target">目标部位</string>
-    <string name="label_is_isometric">等长收缩</string>
-    <string name="label_reference">参考</string>
-    <string name="label_is_isometric_DESC">需要静态保持的动作</string>
-    <string name="label_reference_optional">可选*</string>
-    <string name="label_exercise_exists">动作已存在</string>
+                        <string name="label_exercise_exists">动作已存在</string>
     <string name="label_rename_exercise">重命名动作</string>
     <string name="label_rename_exercise_description">该动作已有训练记录，重命名后所有历史记录中的名称也会随之更新。确认继续？</string>
 
     <!--Select Exercises-->
     <string name="label_add_exercise_header">添加动作</string>
-    <string name="label_search_exercise">搜索动作</string>
-    <string name="label_no_exercise_today">今日无计划动作</string>
+        <string name="label_no_exercise_today">今日无计划动作</string>
     <string name="label_delete_exercise_title">删除动作</string>
     <string name="label_delete_exercise_message">确定要删除这个动作吗？删除后相关训练记录将保留。</string>
 
@@ -190,11 +165,9 @@
     <string name="label_edit_record">编辑记录</string>
 
     <!--Project Specific-->
-    <string name="label_session">训练</string>
-    <string name="label_exercise">动作</string>
+        <string name="label_exercise">动作</string>
     <string name="label_reps">次数</string>
-    <string name="label_duration">时长</string>
-    <string name="label_duration_summary">时长</string>
+        <string name="label_duration_summary">时长</string>
     <string name="label_weight">重量</string>
     <string name="label_bodyweight">自重</string>
     <string name="label_bodyweight_display">自重</string>
@@ -203,12 +176,10 @@
     <string name="label_add_set">添加组</string>
     <string name="label_no_sets_recorded">未记录训练组</string>
     <string name="label_sets_count">%1$s 组</string>
-    <string name="label_coming_soon">敬请期待</string>
-
+    
     <!--Navigation-->
     <string name="label_home">首页</string>
-    <string name="label_performance">表现</string>
-    <string name="label_statistics">统计</string>
+        <string name="label_statistics">统计</string>
     <string name="label_profile">我的</string>
 
     <!--Statistics-->
@@ -246,16 +217,13 @@
     </string-array>
 
     <!--Error-->
-    <string name="error_invalid_reference">无效参考</string>
-    <string name="error_invalid_reference_format">无效参考格式</string>
-    <string name="error_invalid_url">无效 URL</string>
+            <string name="error_invalid_url">无效 URL</string>
     <string name="error_unknown">未知错误</string>
     <string name="error_generic">出错了</string>
     <string name="error_plan_name_empty">请输入计划名称</string>
     <string name="error_plan_name_exists">计划名称已存在</string>
     <string name="error_exercise_name_empty">请输入动作名称</string>
-    <string name="error_plan_empty">计划为空</string>
-    <string name="error_plan_empty_prompt">丢弃计划？再次按返回键确认。</string>
+        <string name="error_plan_empty_prompt">丢弃计划？再次按返回键确认。</string>
     <string name="error_cant_find_session">找不到训练</string>
     <string name="error_cant_find_exercise">找不到动作</string>
 
@@ -301,17 +269,14 @@
     <string name="label_app_backup">程序备份</string>
     <string name="label_restore">恢复数据</string>
     <string name="label_last_backup">上次备份: %s</string>
-    <string name="label_last_backup_never">从未备份</string>
-    <string name="label_backup_in_progress">备份中…</string>
+        <string name="label_backup_in_progress">备份中…</string>
     <string name="label_restore_in_progress">恢复中…</string>
     <string name="label_backup_success">备份完成</string>
     <string name="label_restore_success">恢复完成，请重启应用。</string>
     <string name="error_backup_failed">备份失败</string>
     <string name="error_restore_failed">恢复失败</string>
     <string name="label_restore_warning">这将覆盖所有当前数据。是否继续？</string>
-    <string name="label_select_backup_location">选择备份文件夹</string>
-    <string name="label_select_backup_file">选择备份文件</string>
-
+        
     <!--Export-->
     <string name="label_export_data">导出数据</string>
     <string name="label_export_training_data">导出训练数据</string>
@@ -346,9 +311,7 @@
     <string name="label_selected_tags">已选标签</string>
     <string name="label_at_least_one_tag">至少选择一个标签</string>
     <string name="label_delete_tag_warning">该标签关联了 %d 个动作。删除后将移除这些动作的该标签。</string>
-    <string name="label_tag_delete_blocked">其中 %d 个动作将失去所有标签，请先为这些动作补充标签。</string>
-    <string name="label_tag_change_warning">此修改会影响所有关联此标签的历史数据，是否继续？</string>
-    <string name="label_confirm_delete_tag">确定要删除此标签？</string>
+            <string name="label_confirm_delete_tag">确定要删除此标签？</string>
 
     <!--Timer-->
     <string name="label_timer_channel">训练计时器</string>
@@ -368,19 +331,14 @@
     <string name="timer_status_idle">准备开始</string>
     <string name="timer_status_running">进行中…</string>
     <string name="timer_status_paused">已暂停</string>
-    <string name="label_current_plan_title">当前计划：%s</string>
-    <string name="label_today_plan">今日训练</string>
-    <string name="label_no_plan_today">今日无计划</string>
-    <string name="label_train_anyway_prompt">今日无计划动作。是否仍要训练？</string>
-    <string name="label_add_exercise">添加动作</string>
+        <string name="label_today_plan">今日训练</string>
+            <string name="label_add_exercise">添加动作</string>
     <string name="label_change_plan">更改计划</string>
-    <string name="label_training_session">训练中</string>
-
+    
     <!--Training Cycle-->
     <string name="label_day_n">第 %1$d 天</string>
     <string name="label_day_progress">第 %1$d/%2$d 天</string>
-    <string name="label_rest_day">休息日</string>
-    <string name="label_rest_short">休</string>
+        <string name="label_rest_short">休</string>
     <string name="label_today_rest">今日休息 — 可从菜单选择其他训练日训练</string>
     <string name="label_switch_training_day">切换训练日</string>
     <string name="label_add_day">新增训练日</string>
@@ -392,28 +350,13 @@
     <string name="label_train_other_day">选择训练日训练</string>
 
     <!--Day of Week-->
-    <string name="label_today">.今天</string>
-    <string name="label_plan">计划</string>
-    <string name="label_day">训练日</string>
-    <string name="label_select_a_plan">选择一个计划</string>
-    <string name="label_selecting_a_plan">从选择计划开始</string>
-    <string name="label_start_first_session">开始你的第一次训练</string>
-    <string name="label_start_session_heading">开始今天的训练</string>
-    <string name="label_continue_session_heading">继续今天的训练</string>
-    <string name="label_next">下一步</string>
+                    <string name="label_selecting_a_plan">从选择计划开始</string>
+                <string name="label_next">下一步</string>
     <string name="label_previous_month">上个月</string>
     <string name="label_next_month">下个月</string>
-    <string name="label_boarding_quote">你的下一次蜕变从这里开始。</string>
-    <string name="label_no_sessions">暂无训练记录</string>
+        <string name="label_no_sessions">暂无训练记录</string>
 
-    <string-array name="label_features">
-        <item>进度跟踪</item>
-        <item>渐进负荷</item>
-        <item>数据统计</item>
-        <item>计划管理</item>
-        <item>快速反馈</item>
-    </string-array>
-
+    
     <string-array name="day_of_week_short">
         <item>一</item>
         <item>二</item>
