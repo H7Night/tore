@@ -112,51 +112,22 @@ fun Home(
     var showTrainingDayPicker by remember { mutableStateOf(false) }
 
     if (showResetConfirm) {
-        AlertDialog(
-            onDismissRequest = { showResetConfirm = false },
-            title = { Text(stringResource(R.string.label_reset_timer_title)) },
-            text = { Text(stringResource(R.string.label_reset_timer_message)) },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        viewModel.resetTimer()
-                        showResetConfirm = false
-                    },
-                ) {
-                    Text(stringResource(R.string.label_confirm))
-                }
+        ResetTimerDialog(
+            onConfirm = {
+                viewModel.resetTimer()
+                showResetConfirm = false
             },
-            dismissButton = {
-                TextButton(onClick = { showResetConfirm = false }) {
-                    Text(stringResource(R.string.label_cancel))
-                }
-            },
+            onDismiss = { showResetConfirm = false },
         )
     }
 
     if (showEndConfirm) {
-        AlertDialog(
-            onDismissRequest = { showEndConfirm = false },
-            title = { Text(stringResource(R.string.label_end_workout)) },
-            text = { Text(stringResource(R.string.label_end_workout_confirm)) },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        viewModel.endWorkout()
-                        showEndConfirm = false
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.error,
-                    ),
-                ) {
-                    Text(stringResource(R.string.label_confirm))
-                }
+        EndWorkoutDialog(
+            onConfirm = {
+                viewModel.endWorkout()
+                showEndConfirm = false
             },
-            dismissButton = {
-                TextButton(onClick = { showEndConfirm = false }) {
-                    Text(stringResource(R.string.label_cancel))
-                }
-            },
+            onDismiss = { showEndConfirm = false },
         )
     }
 
@@ -184,23 +155,12 @@ fun Home(
     }
 
     if (showImportConfirm) {
-        AlertDialog(
-            onDismissRequest = { showImportConfirm = false },
-            title = { Text(stringResource(R.string.label_modify_plan)) },
-            text = { Text(stringResource(R.string.label_modify_plan_message)) },
-            confirmButton = {
-                Button(onClick = {
-                    showImportConfirm = false
-                    showTrainingDayPicker = true
-                }) {
-                    Text(stringResource(R.string.label_yes))
-                }
+        ConfirmPlanChangeDialog(
+            onConfirm = {
+                showImportConfirm = false
+                showTrainingDayPicker = true
             },
-            dismissButton = {
-                TextButton(onClick = { showImportConfirm = false }) {
-                    Text(stringResource(R.string.label_no))
-                }
-            },
+            onDismiss = { showImportConfirm = false },
         )
     }
 
@@ -243,29 +203,7 @@ fun Home(
                 )
 
                 if (!notifState.granted) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 12.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Icon(
-                            painter = KenkoIcons.Info,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.size(16.dp),
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = stringResource(R.string.label_notification_rationale),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.weight(1f),
-                        )
-                        TextButton(onClick = notifState.request) {
-                            Text(stringResource(R.string.label_enable))
-                        }
-                    }
+                    NotificationRationaleRow(onEnable = notifState.request)
                 }
 
                 when (state.trainingState) {
@@ -304,6 +242,106 @@ fun Home(
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun ResetTimerDialog(
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.label_reset_timer_title)) },
+        text = { Text(stringResource(R.string.label_reset_timer_message)) },
+        confirmButton = {
+            Button(onClick = onConfirm) {
+                Text(stringResource(R.string.label_confirm))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.label_cancel))
+            }
+        },
+    )
+}
+
+@Composable
+private fun EndWorkoutDialog(
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.label_end_workout)) },
+        text = { Text(stringResource(R.string.label_end_workout_confirm)) },
+        confirmButton = {
+            Button(
+                onClick = onConfirm,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.error,
+                ),
+            ) {
+                Text(stringResource(R.string.label_confirm))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.label_cancel))
+            }
+        },
+    )
+}
+
+@Composable
+private fun ConfirmPlanChangeDialog(
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.label_modify_plan)) },
+        text = { Text(stringResource(R.string.label_modify_plan_message)) },
+        confirmButton = {
+            Button(onClick = onConfirm) {
+                Text(stringResource(R.string.label_yes))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.label_no))
+            }
+        },
+    )
+}
+
+@Composable
+private fun NotificationRationaleRow(
+    onEnable: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            painter = KenkoIcons.Info,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(16.dp),
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = stringResource(R.string.label_notification_rationale),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.weight(1f),
+        )
+        TextButton(onClick = onEnable) {
+            Text(stringResource(R.string.label_enable))
         }
     }
 }
