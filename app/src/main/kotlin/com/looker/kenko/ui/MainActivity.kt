@@ -26,9 +26,12 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.core.os.LocaleListCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -40,6 +43,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.looker.kenko.data.repository.SessionRepo
+import com.looker.kenko.ui.base.AppSnackbar
 import com.looker.kenko.ui.component.KenkoBottomBar
 import com.looker.kenko.ui.component.timer.TimerManager
 import com.looker.kenko.ui.component.timer.TimerState
@@ -123,6 +127,10 @@ class MainActivity : AppCompatActivity() {
                 theme = theme,
                 palette = palette,
             ) {
+                val snackbarHostState = remember { SnackbarHostState() }
+                LaunchedEffect(Unit) {
+                    AppSnackbar.messages.collect { snackbarHostState.showSnackbar(it) }
+                }
                 val navController = rememberNavController()
                 val backStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = backStackEntry?.destination?.route
@@ -142,6 +150,7 @@ class MainActivity : AppCompatActivity() {
                           backStackEntry?.arguments?.getBoolean("showBackButton") == false)
 
                 Kenko(
+                    snackbarHostState = snackbarHostState,
                     bottomBar = {
                         if (isTopLevelRoute) {
                             KenkoBottomBar(
@@ -201,6 +210,7 @@ class MainActivity : AppCompatActivity() {
 
 @Composable
 fun Kenko(
+    snackbarHostState: SnackbarHostState,
     bottomBar: @Composable () -> Unit = {},
     content: @Composable (innerPadding: PaddingValues) -> Unit,
 ) {
@@ -208,6 +218,7 @@ fun Kenko(
     // 内容通过 innerPadding 自动避让,无需手动测量导航栏高度。
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surface,
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         bottomBar = { bottomBar() },
         // 只负责底部导航栏占位;顶部/底部系统栏由各页自己的 TopAppBar/Scaffold 处理,
         // 避免状态栏 inset 被外层和内层各算一次(顶部多出约 50dp 空白)。
