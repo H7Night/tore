@@ -48,12 +48,9 @@ import androidx.compose.ui.unit.sp
 import com.looker.kenko.R
 import com.looker.kenko.domain.statistics.HEATMAP_WINDOW_DAYS
 import com.looker.kenko.domain.statistics.buildHeatmapData
-import kotlin.time.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
-import kotlinx.datetime.toLocalDateTime
 
 @Composable
 fun HeatmapCard(
@@ -143,42 +140,6 @@ private fun HeatmapLegend(modifier: Modifier = Modifier) {
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
-}
-
-@Composable
-fun HeatmapCard(
-    sessionDates: Set<LocalDate>,
-    modifier: Modifier = Modifier,
-    countByDate: Map<LocalDate, Int> = emptyMap(),
-) {
-    val today = remember { Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date }
-    HeatmapCard(
-        sessionDates = sessionDates,
-        today = today,
-        modifier = modifier,
-        countByDate = countByDate
-    )
-}
-
-/**
- * Deprecated alias kept for backward compatibility — delegates to [HeatmapCard] with 90d window.
- */
-@Deprecated("Use HeatmapCard instead", ReplaceWith("HeatmapCard(sessionDates, today, modifier, countByDate)"))
-@Composable
-fun YearHeatmap(
-    sessionDates: Set<LocalDate>,
-    countByDate: Map<LocalDate, Int> = emptyMap(),
-    modifier: Modifier = Modifier,
-    initialYear: Int = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date.year,
-    onYearChange: (Int) -> Unit = {},
-) {
-    val today = remember { Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date }
-    HeatmapCard(
-        sessionDates = sessionDates,
-        today = today,
-        modifier = modifier,
-        countByDate = countByDate
-    )
 }
 
 @Composable

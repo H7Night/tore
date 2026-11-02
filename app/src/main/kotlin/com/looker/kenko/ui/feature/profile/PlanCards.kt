@@ -50,7 +50,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.looker.kenko.R
 import com.looker.kenko.ui.component.KenkoBorderWidth
-import com.looker.kenko.ui.component.SecondaryBorder
 import com.looker.kenko.ui.extension.PHI
 import com.looker.kenko.ui.extension.normalizeInt
 import com.looker.kenko.ui.theme.KenkoIcons

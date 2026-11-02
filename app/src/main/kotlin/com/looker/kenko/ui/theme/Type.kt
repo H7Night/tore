@@ -31,11 +31,6 @@ val displayFont = FontFamily(
     Font(R.font.darkergrotesque_semibold, weight = FontWeight.SemiBold),
 )
 
-val bodyFont = FontFamily(
-    Font(R.font.maplemono_bold, weight = FontWeight.Bold),
-    Font(R.font.maplemono_regular, weight = FontWeight.Normal),
-)
-
 fun Typography.header() = displayLarge.copy(
     fontSize = 28.sp,
     lineHeight = 32.sp,
@@ -43,16 +38,6 @@ fun Typography.header() = displayLarge.copy(
 )
 
 fun TextStyle.numbers() = copy(fontFamily = FontFamily.Numbers)
-
-/**
- * Oversized decorative style for background slogans/watermarks (larger than the
- * normal 10–28sp scale, used at low alpha behind content).
- */
-fun Typography.watermark() = displayLarge.copy(
-    fontSize = 40.sp,
-    lineHeight = 44.sp,
-    letterSpacing = (-0.02).sp,
-)
 
 val baseline = Typography()
 

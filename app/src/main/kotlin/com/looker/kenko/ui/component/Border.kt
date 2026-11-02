@@ -5,10 +5,12 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -22,21 +24,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 val KenkoBorderWidth: Dp = 1.dp
-val KenkoHairlineWidth: Dp = 0.8.dp
 
-// Linear-style hairline borders — hierarchy via border, not fill
-// LinearBorderStrong intentionally uses outlineVariant (subtle grey) for card/tag borders.
-val LinearBorder: BorderStroke
-    @Composable
-    get() = BorderStroke(KenkoBorderWidth, MaterialTheme.colorScheme.outline)
-
-val LinearBorderStrong: BorderStroke
-    @Composable
-    get() = BorderStroke(KenkoBorderWidth, MaterialTheme.colorScheme.outlineVariant)
-
-// KenkoBorder aliases — intentionally different from Linear*:
-// - KenkoBorder (= outline) for unselected FilterChip/card default
-// - KenkoBorderStrong (= primary) for selected FilterChip/active state (not card grey)
 val KenkoBorder: BorderStroke
     @Composable
     get() = BorderStroke(KenkoBorderWidth, MaterialTheme.colorScheme.outline)
@@ -44,23 +32,3 @@ val KenkoBorder: BorderStroke
 val KenkoBorderStrong: BorderStroke
     @Composable
     get() = BorderStroke(KenkoBorderWidth, MaterialTheme.colorScheme.primary)
-
-val PrimaryBorder: BorderStroke
-    @Composable
-    get() = BorderStroke(KenkoBorderWidth, MaterialTheme.colorScheme.primary)
-
-val SecondaryBorder: BorderStroke
-    @Composable
-    get() = BorderStroke(KenkoBorderWidth, MaterialTheme.colorScheme.outline)
-
-val OutlineBorder: BorderStroke
-    @Composable
-    get() = BorderStroke(KenkoBorderWidth, MaterialTheme.colorScheme.outline)
-
-val OnSurfaceBorder: BorderStroke
-    @Composable
-    get() = BorderStroke(KenkoBorderWidth, MaterialTheme.colorScheme.outline)
-
-val OnSurfaceVariantBorder: BorderStroke
-    @Composable
-    get() = BorderStroke(KenkoBorderWidth, MaterialTheme.colorScheme.outline)

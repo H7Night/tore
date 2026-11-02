@@ -69,7 +69,6 @@ import com.looker.kenko.ui.theme.numbers
 fun SetItem(
     set: Set,
     modifier: Modifier = Modifier,
-    isToday: Boolean = true,
     isEditMode: Boolean = false,
     onRepsUpdate: (Int) -> Unit = {},
     onWeightUpdate: (Float) -> Unit = {},

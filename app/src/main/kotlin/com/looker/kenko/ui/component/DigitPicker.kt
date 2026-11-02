@@ -34,7 +34,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.looker.kenko.ui.theme.numbers
 
@@ -46,9 +45,7 @@ fun DigitPicker(
     modifier: Modifier = Modifier,
     range: IntRange = 0..9
 ) {
-    val density = LocalDensity.current
     val itemHeight = 48.dp
-    val itemHeightPx = with(density) { itemHeight.toPx() }
 
     val digits = remember(range) { range.toList() }
     val listState = rememberLazyListState(initialFirstVisibleItemIndex = digits.indexOf(value).coerceAtLeast(0))

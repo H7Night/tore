@@ -41,5 +41,3 @@ context(density: Density)
 operator fun DpRange.contains(other: Float): Boolean = with(density) {
     other > start.toPx() && other < end.toPx()
 }
-
-operator fun DpRange.contains(other: Dp): Boolean = other > start && other < end

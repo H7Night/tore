@@ -15,10 +15,8 @@
 
 package com.looker.kenko.utils
 
-import kotlin.random.Random
 import kotlin.time.Clock
 import kotlin.time.Instant
-import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
@@ -31,16 +29,7 @@ import kotlinx.datetime.todayIn
 @JvmInline
 value class EpochDays(val value: Int)
 
-operator fun EpochDays.plus(other: EpochDays) = EpochDays(value + other.value)
-
 fun LocalDate.toLocalEpochDays() = EpochDays(toEpochDays().toInt())
-
-inline operator fun DayOfWeek.plus(days: Int): DayOfWeek {
-    val amount = (days % 7)
-    return DayOfWeek(((ordinal + (amount + 7)) % 7) + 1)
-}
-
-inline operator fun DayOfWeek.minus(days: Int): DayOfWeek = plus(-days)
 
 val LocalDate.isToday: Boolean
     get() = daysUntil(Clock.System.todayIn(TimeZone.currentSystemDefault())) == 0
@@ -65,19 +54,3 @@ fun Instant.toFormat(): String {
     }
     return dateTime.format(formatter)
 }
-
-fun Random.nextInstant(
-    from: Instant = Instant.DISTANT_PAST,
-    until: Instant = Instant.DISTANT_FUTURE,
-): Instant = Instant.fromEpochMilliseconds(
-    nextLong(
-        from = from.toEpochMilliseconds(),
-        until = until.toEpochMilliseconds(),
-    ),
-)
-
-fun Random.nextLocalDateTime(
-    from: Instant = Instant.DISTANT_PAST,
-    until: Instant = Instant.DISTANT_FUTURE,
-): LocalDateTime = nextInstant(from, until)
-    .toLocalDateTime(TimeZone.currentSystemDefault())
