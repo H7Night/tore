@@ -32,13 +32,11 @@ import com.looker.kenko.ui.feature.exercise.navigation.exercises
 import com.looker.kenko.ui.feature.exercise.navigation.navigateToExercises
 import com.looker.kenko.ui.feature.home.navigation.HomeRoute
 import com.looker.kenko.ui.feature.home.navigation.home
-import com.looker.kenko.ui.feature.performance.navigation.performance
 import com.looker.kenko.ui.feature.statistics.navigation.statistics
 import com.looker.kenko.ui.feature.plan.navigation.navigateToPlanEdit
 import com.looker.kenko.ui.feature.plan.navigation.planEdit
 import com.looker.kenko.ui.feature.plan.navigation.navigateToPlans
 import com.looker.kenko.ui.feature.plan.navigation.plans
-import com.looker.kenko.ui.feature.profile.navigation.navigateToProfile
 import com.looker.kenko.ui.feature.profile.navigation.profile
 import com.looker.kenko.ui.feature.session.navigation.calendar
 import com.looker.kenko.ui.feature.session.navigation.navigateToCalendar
@@ -72,9 +70,6 @@ fun KenkoNavHost(
         popExitTransition = { detailPopExit() },
     ) {
         home(
-            onProfileClick = {
-                navController.navigateToProfile(navOptions = singleTopNavOptions)
-            },
             onSelectPlanClick = {
                 navController.navigateToPlans(navOptions = singleTopNavOptions)
             },
@@ -200,8 +195,6 @@ fun KenkoNavHost(
         backup(navController::popBackStackOnResume)
 
         about(navController::popBackStackOnResume)
-
-        performance()
     }
 }
 

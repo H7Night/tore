@@ -18,7 +18,6 @@ package com.looker.kenko.di
 import android.content.Context
 import com.looker.kenko.data.local.KenkoDatabase
 import com.looker.kenko.data.local.dao.ExerciseDao
-import com.looker.kenko.data.local.dao.PerformanceDao
 import com.looker.kenko.data.local.dao.PlanDao
 import com.looker.kenko.data.local.dao.PlanHistoryDao
 import com.looker.kenko.data.local.dao.SessionDao
@@ -72,12 +71,6 @@ object DatabaseModule {
     fun providePlanHistoryDao(
         database: KenkoDatabase,
     ): PlanHistoryDao = database.historyDao()
-
-    @Provides
-    @Singleton
-    fun providePerformanceDao(
-        database: KenkoDatabase,
-    ): PerformanceDao = database.performanceDao()
 
     @Provides
     @Singleton
