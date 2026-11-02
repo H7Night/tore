@@ -28,8 +28,12 @@ internal class FakeSettingsRepo(
     override fun <T> get(block: Settings.() -> T): Flow<T> = state.map { it.block() }
     override suspend fun setTheme(theme: Theme) { state.value = state.value.copy(theme = theme) }
     override suspend fun setBackupUri(uri: String?) = Unit
-    override suspend fun setBackupInterval(interval: BackupInterval) = Unit
-    override suspend fun setLastBackupTime(instant: Instant?) = Unit
+    override suspend fun setBackupInterval(interval: BackupInterval) {
+        state.value = state.value.copy(backupInterval = interval)
+    }
+    override suspend fun setLastBackupTime(instant: Instant?) {
+        state.value = state.value.copy(lastBackupTime = instant)
+    }
     override suspend fun setLanguage(language: Language) = Unit
     override suspend fun setBodyWeightEnabled(enabled: Boolean) {
         state.value = state.value.copy(bodyWeightEnabled = enabled)

@@ -47,15 +47,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.looker.kenko.R
 import com.looker.kenko.ui.component.BackButton
 import com.looker.kenko.ui.component.KenkoBorderWidth
-import com.looker.kenko.ui.feature.settings.BackupMessage
 import com.looker.kenko.ui.feature.settings.BackupSection
-import com.looker.kenko.ui.feature.settings.SettingsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun BackupScreen(
     onBackPress: () -> Unit,
-    viewModel: SettingsViewModel = hiltViewModel(),
+    viewModel: BackupViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
