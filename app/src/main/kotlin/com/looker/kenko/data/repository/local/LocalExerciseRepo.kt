@@ -17,7 +17,6 @@ package com.looker.kenko.data.repository.local
 
 import com.looker.kenko.data.local.dao.ExerciseDao
 import com.looker.kenko.data.local.dao.TagDao
-import com.looker.kenko.data.local.model.ExerciseEntity
 import com.looker.kenko.data.mapper.toEntity
 import com.looker.kenko.data.mapper.toExternal
 import com.looker.kenko.data.repository.ExerciseRepo

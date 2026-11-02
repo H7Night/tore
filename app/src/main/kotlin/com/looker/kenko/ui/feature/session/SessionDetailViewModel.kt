@@ -17,7 +17,6 @@ package com.looker.kenko.ui.feature.session
 
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Stable
-import androidx.compose.ui.platform.UriHandler
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
@@ -66,7 +65,6 @@ class SessionDetailViewModel @Inject constructor(
     private val exerciseRepo: ExerciseRepo,
     private val settingsRepo: SettingsRepo,
     private val savedStateHandle: SavedStateHandle,
-    private val uriHandler: UriHandler,
 ) : KenkoViewModel() {
 
     private val routeData: SessionDetailRoute = savedStateHandle.toRoute<SessionDetailRoute>()
@@ -337,11 +335,6 @@ class SessionDetailViewModel @Inject constructor(
         }
     }
 
-    fun openReference(reference: String) {
-        launchCatching {
-            uriHandler.openUri(reference)
-        }
-    }
 }
 
 @Stable

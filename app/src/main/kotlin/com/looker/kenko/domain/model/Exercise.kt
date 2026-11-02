@@ -40,10 +40,6 @@ data class Exercise(
     /** 主肌群 tag（若 [primaryTagId] 有效且存在）；否则取第一个标签作回退。 */
     val primaryTag: Tag?
         get() = tags.firstOrNull { it.id == primaryTagId } ?: tags.firstOrNull()
-
-    /** 次肌群 tags。 */
-    val secondaryTags: List<Tag>
-        get() = primaryTag?.let { primary -> tags.filter { it.id != primary.id } } ?: emptyList()
 }
 
 @Stable

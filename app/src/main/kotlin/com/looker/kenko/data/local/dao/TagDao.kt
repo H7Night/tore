@@ -75,14 +75,4 @@ interface TagDao {
     @Query("DELETE FROM exercise_tags WHERE exerciseId = :exerciseId")
     suspend fun deleteExerciseTags(exerciseId: Int)
 
-    @Query("""
-        SELECT e.id FROM exercises e
-        INNER JOIN exercise_tags et ON e.id = et.exerciseId
-        INNER JOIN tags t ON et.tagId = t.id
-        WHERE t.id = :tagId OR t.parentId = :tagId
-    """)
-    suspend fun getExerciseIdsByTag(tagId: Int): List<Int>
-
-    @Query("SELECT COUNT(*) FROM exercise_tags et INNER JOIN exercises e ON e.id = et.exerciseId WHERE et.tagId = :tagId")
-    suspend fun exerciseCountByTagId(tagId: Int): Int
 }

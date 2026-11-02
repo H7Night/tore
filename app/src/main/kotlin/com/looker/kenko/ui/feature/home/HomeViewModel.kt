@@ -141,9 +141,6 @@ class HomeViewModel @Inject constructor(
     }.flatMapLatest { it ?: flowOf(null) }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    val planExercises: StateFlow<List<com.looker.kenko.domain.model.PlanItem>> = planItemStream
-        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
-
     val sessionSets: StateFlow<List<TrainingExercise>> =
         combine(sessionStream, planItemStream, extraExercises) { session, planItems, extra ->
             orderTrainingExercises(
@@ -233,10 +230,6 @@ class HomeViewModel @Inject constructor(
                 planRepo.advanceDay(requireNotNull(plan.id), day)
             }
         }
-    }
-
-    fun dismissEndedSession() {
-        trainingSessionManager.reset()
     }
 
     fun selectTrainingDay(dayIndex: Int) {

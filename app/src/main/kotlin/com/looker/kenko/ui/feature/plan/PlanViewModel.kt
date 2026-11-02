@@ -24,7 +24,6 @@ import com.looker.kenko.R
 import com.looker.kenko.data.StringHandler
 import com.looker.kenko.domain.model.Plan
 import com.looker.kenko.data.repository.PlanRepo
-import com.looker.kenko.data.repository.SettingsRepo
 import com.looker.kenko.data.plan.PlanTransferManager
 import com.looker.kenko.utils.asStateFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -40,7 +39,6 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class PlanViewModel @Inject constructor(
     private val repo: PlanRepo,
-    private val settingsRepo: SettingsRepo,
     private val stringHandler: StringHandler,
     private val transferManager: PlanTransferManager,
 ) : ViewModel() {
@@ -122,9 +120,6 @@ class PlanViewModel @Inject constructor(
                     plan.id?.let { repo.setCurrent(it) }
                 } else {
                     repo.updatePlan(plan.copy(isActive = false))
-                }
-                if (repo.current.first() != null) {
-                    settingsRepo.setOnboardingDone()
                 }
             } catch (e: Exception) {
                 snackbarState.showSnackbar(e.message ?: stringHandler.getString(R.string.error_generic))
