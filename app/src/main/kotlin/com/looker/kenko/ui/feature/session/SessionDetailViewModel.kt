@@ -107,10 +107,7 @@ class SessionDetailViewModel @Inject constructor(
                     }
                 }
                 if (flows.isEmpty()) flowOf(emptyMap())
-                else combine(flows) { array ->
-                    @Suppress("UNCHECKED_CAST")
-                    array.map { it as Pair<Int, Map<Int, kotlin.collections.Set<String>>> }.toMap()
-                }
+                else combine(flows) { array -> array.toMap() }
             }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(SharingStartedDefault), emptyMap())
 
@@ -201,22 +198,20 @@ class SessionDetailViewModel @Inject constructor(
     private val _currentExercise: MutableStateFlow<Exercise?> = MutableStateFlow(null)
     val current: StateFlow<Exercise?> = _currentExercise
 
+    private val sessionAndExercises = combine(sessionStream, exercisesToday, ::Pair)
+    private val previousAndAvailable = combine(
+        previousSessionDateStream,
+        availablePlanItems,
+        ::Pair,
+    )
+    private val editAndPlans = combine(_isEditMode, planRepo.plans, ::Pair)
+
     val state: StateFlow<SessionDetailState> =
         combine(
-            sessionStream,
-            exercisesToday,
-            previousSessionDateStream,
-            availablePlanItems,
-            _isEditMode,
-            planRepo.plans,
-        ) { flows ->
-            val session = flows[0] as Session?
-            val exercises = flows[1] as List<Exercise>
-            val previousSessionDate = flows[2] as LocalDate?
-            val available = flows[3] as Map<Int, List<Exercise>>
-            val isEditMode = flows[4] as Boolean
-            val plans = flows[5] as List<com.looker.kenko.domain.model.Plan>
-
+            sessionAndExercises,
+            previousAndAvailable,
+            editAndPlans,
+        ) { (session, exercises), (previousSessionDate, available), (isEditMode, plans) ->
             if (session == null && epochDays != null) {
                 return@combine SessionDetailState.Error.InvalidSession
             }

@@ -21,6 +21,9 @@ import com.looker.kenko.data.repository.ExerciseRepo
 import com.looker.kenko.data.repository.PlanRepo
 import com.looker.kenko.data.repository.SessionRepo
 import com.looker.kenko.domain.model.Exercise
+import com.looker.kenko.domain.model.Plan
+import com.looker.kenko.domain.model.PlanItem
+import com.looker.kenko.domain.model.Session
 import com.looker.kenko.domain.model.TrainingExercise
 import com.looker.kenko.domain.model.orderTrainingExercises
 import com.looker.kenko.domain.model.today
@@ -149,23 +152,19 @@ class HomeViewModel @Inject constructor(
             )
         }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    val state: StateFlow<HomeUiData> = combine(
-        planStream,
-        sessionStream,
-        sessionsStream,
-        planItemStream,
+    private val planAndSession = combine(planStream, sessionStream, ::Pair)
+    private val sessionsAndPlanItems = combine(sessionsStream, planItemStream, ::Pair)
+    private val timerAndTraining = combine(
         timerManager.state,
         trainingSessionManager.sessionState,
-    ) { array: Array<*> ->
-        val currentPlan = array[0] as? com.looker.kenko.domain.model.Plan
-        val currentSession = array[1] as? com.looker.kenko.domain.model.Session
-        @Suppress("UNCHECKED_CAST")
-        val sessions = array[2] as List<com.looker.kenko.domain.model.Session>
-        @Suppress("UNCHECKED_CAST")
-        val planItems = array[3] as List<com.looker.kenko.domain.model.PlanItem>
-        val timerState = array[4] as TimerState
-        val trainingState = array[5] as TrainingSessionState
+        ::Pair,
+    )
 
+    val state: StateFlow<HomeUiData> = combine(
+        planAndSession,
+        sessionsAndPlanItems,
+        timerAndTraining,
+    ) { (currentPlan, currentSession), (sessions, planItems), (timerState, trainingState) ->
         val isFirstSession = sessions.size <= 1 && sessions.firstOrNull()?.date == today()
         val dayIndex = currentSession?.dayIndexOverride ?: currentPlan?.currentDayIndex
         val dayCount = currentPlan?.dayCount ?: 7
