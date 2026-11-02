@@ -34,7 +34,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import com.looker.kenko.R
 import com.looker.kenko.utils.ExportFileName
 import dagger.hilt.android.AndroidEntryPoint
@@ -81,8 +80,6 @@ class CrashSaveActivity : ComponentActivity() {
 
     private fun launchFilePicker() {
         val fileName = ExportFileName.forProject(ExportFileName.PROJECT_CRASH, ExportFileName.EXT_LOG)
-        // Default to Downloads via initial URI
-        val initialUri = "content://com.android.externalstorage.documents/document/primary:Download".toUri()
         createDocLauncher.launch(fileName)
     }
 

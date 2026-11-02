@@ -64,11 +64,6 @@ class CrashHandler @Inject constructor(
         }
     }
 
-    /** Directly trigger the original handler to terminate the process. */
-    fun terminate(thread: Thread = Thread.currentThread(), ex: Throwable) {
-        defaultHandler.uncaughtException(thread, ex)
-    }
-
     /** Clean up temp file if the user chose not to save. */
     fun deleteLogFile() {
         crashLogFile?.delete()
