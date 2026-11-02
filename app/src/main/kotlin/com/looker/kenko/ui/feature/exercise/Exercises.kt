@@ -71,8 +71,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.looker.kenko.R
 import com.looker.kenko.domain.model.Exercise
-import com.looker.kenko.domain.model.ExercisesPreviewParameter
-import com.looker.kenko.domain.model.labelRes
+import com.looker.kenko.ui.preview.ExercisesPreviewParameter
+import com.looker.kenko.ui.extension.labelRes
 import com.looker.kenko.ui.component.BackButton
 import com.looker.kenko.ui.component.EmptyState
 import com.looker.kenko.ui.component.ErrorSnackbar

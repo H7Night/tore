@@ -15,12 +15,7 @@
 
 package com.looker.kenko.domain.model
 
-import androidx.annotation.StringRes
-import androidx.compose.runtime.Stable
-import com.looker.kenko.R
-
 /** 动作使用的器械类型（动作级，区别于计划级的 [Labels.Equipment]）。 */
-@Stable
 enum class ExerciseEquipment {
     BARBELL,
     DUMBBELL,
@@ -29,14 +24,3 @@ enum class ExerciseEquipment {
     BODYWEIGHT,
     OTHER,
 }
-
-@get:StringRes
-val ExerciseEquipment.labelRes: Int
-    get() = when (this) {
-        ExerciseEquipment.BARBELL -> R.string.label_equipment_barbell
-        ExerciseEquipment.DUMBBELL -> R.string.label_equipment_dumbbell
-        ExerciseEquipment.MACHINE -> R.string.label_equipment_machine
-        ExerciseEquipment.CABLE -> R.string.label_equipment_cable
-        ExerciseEquipment.BODYWEIGHT -> R.string.label_equipment_bodyweight
-        ExerciseEquipment.OTHER -> R.string.label_equipment_other
-    }

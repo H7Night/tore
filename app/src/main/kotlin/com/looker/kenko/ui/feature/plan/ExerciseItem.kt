@@ -42,7 +42,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.looker.kenko.R
 import com.looker.kenko.domain.model.Exercise
-import com.looker.kenko.domain.model.ExercisesPreviewParameter
+import com.looker.kenko.ui.preview.ExercisesPreviewParameter
 import com.looker.kenko.ui.theme.KenkoIcons
 import com.looker.kenko.ui.theme.KenkoTheme
 

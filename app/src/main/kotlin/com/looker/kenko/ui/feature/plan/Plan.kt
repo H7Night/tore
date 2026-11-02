@@ -48,7 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.looker.kenko.R
 import com.looker.kenko.domain.model.Plan
-import com.looker.kenko.domain.model.PlanPreviewParameters
+import com.looker.kenko.ui.preview.PlanPreviewParameters
 import com.looker.kenko.ui.component.BackButton
 import com.looker.kenko.ui.component.ErrorSnackbar
 import com.looker.kenko.ui.component.ConfirmDialog

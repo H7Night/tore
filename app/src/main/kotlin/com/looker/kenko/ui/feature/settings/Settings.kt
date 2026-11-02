@@ -54,6 +54,8 @@ import com.looker.kenko.domain.model.settings.ColorPalette
 import com.looker.kenko.domain.model.settings.Language
 import com.looker.kenko.domain.model.settings.Theme
 import com.looker.kenko.ui.component.BackButton
+import com.looker.kenko.ui.extension.labelRes
+import com.looker.kenko.ui.extension.nameRes
 import com.looker.kenko.utils.toFormat
 import com.looker.kenko.ui.component.SelectionDialog
 import com.looker.kenko.ui.component.SettingsGroup

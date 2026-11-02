@@ -15,11 +15,8 @@
 
 package com.looker.kenko.domain.model.settings
 
-import androidx.annotation.StringRes
-import com.looker.kenko.R
-
-enum class Language(val code: String?, @StringRes val labelRes: Int) {
-    System(null, R.string.label_theme_system),
-    English("en", R.string.label_language_en),
-    Chinese("zh", R.string.label_language_zh),
+enum class Language(val code: String?) {
+    System(null),
+    English("en"),
+    Chinese("zh"),
 }

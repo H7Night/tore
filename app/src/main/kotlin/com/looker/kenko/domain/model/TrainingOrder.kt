@@ -15,9 +15,7 @@
 
 package com.looker.kenko.domain.model
 
-import androidx.compose.runtime.Immutable
 
-@Immutable
 data class TrainingExercise(
     val exercise: Exercise,
     val sets: List<Set>,

@@ -41,7 +41,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.looker.kenko.R
 import com.looker.kenko.domain.model.Plan
-import com.looker.kenko.domain.model.PlanPreviewParameters
+import com.looker.kenko.ui.preview.PlanPreviewParameters
 import com.looker.kenko.ui.component.DeleteIconButton
 import com.looker.kenko.ui.extension.normalizeInt
 import com.looker.kenko.ui.theme.KenkoTheme

@@ -59,7 +59,7 @@ import androidx.compose.ui.unit.dp
 import com.looker.kenko.R
 import com.looker.kenko.domain.model.CountType
 import com.looker.kenko.domain.model.Exercise
-import com.looker.kenko.domain.model.ExercisesPreviewParameter
+import com.looker.kenko.ui.preview.ExercisesPreviewParameter
 import com.looker.kenko.domain.model.Set
 import com.looker.kenko.domain.model.repDurationStringRes
 import com.looker.kenko.ui.theme.KenkoTheme

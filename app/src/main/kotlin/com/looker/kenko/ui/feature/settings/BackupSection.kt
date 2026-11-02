@@ -58,6 +58,7 @@ import androidx.core.net.toUri
 import com.looker.kenko.R
 import com.looker.kenko.data.export.ExportOptions
 import com.looker.kenko.domain.model.settings.BackupInterval
+import com.looker.kenko.ui.extension.nameRes
 import com.looker.kenko.ui.theme.KenkoIcons
 import com.looker.kenko.ui.theme.KenkoTheme
 import com.looker.kenko.ui.theme.end
