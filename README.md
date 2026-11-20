@@ -2,18 +2,24 @@
 
 # Tore
 
-Tore is a focused workout journal for strength training and cardio.
+Tore is a workout journal for strength training and cardio.
 
-The name comes from the Japanese term `筋トレ`, short for `筋肉トレーニング`, meaning strength training。 Tore helps you build a repeatable routine, record each session, and see whether your training is balanced over time。
+The name comes from the Japanese term `筋トレ`, short for `筋肉トレーニング`, meaning strength training. Tore helps you build a steady routine, record each session, and review your training balance over time.
 
 ## Features
 
 - Log resistance and cardio sessions
+- **Calendar history**: browse completed workouts by date and open each session
+- **Exercise progress**: review best sets, estimated 1RM, and total volume over time
 - Build plans with training days, rest days, and custom day titles
+- **Flexible workout editing**: add multiple exercises, including exercises outside the current plan
 - Import and export plans as JSON
-- Organize exercises with body-part and muscle-group tags
+- Organize and filter exercises by body part, muscle group, and equipment
+- **Weekly summary**: see this week's training and today's planned exercises on Home
 - Track consistency with heatmaps, trends, balance, and adherence statistics
 - Record body weight and review progress over time
+- **Health Connect sync**: optionally sync completed workouts
+- **Color palettes**: choose a palette alongside light and dark themes
 - Use an inline workout timer with pause and resume
 - Delete data through explicit confirmation dialogs
 - Back up the complete database or export selected training data
@@ -48,11 +54,7 @@ The `scripts/` directory contains non-interactive wrappers for common Windows an
 
 ## Release
 
-Release preparation is managed by GitHub Actions. The preparation workflow updates the version, changelog, and Fastlane metadata. Merging the release pull request into `main` starts the signed release build and publishing workflow.
-
-## Screenshots
-
-Screenshots will be added after the Tore redesign is installed on a connected device.
+GitHub Actions prepares each release by updating the version, changelog, and Fastlane metadata, then opening a `release/<version>` pull request. Merging that pull request into `main` builds and signs the APK and AAB, then creates a GitHub Release draft with both files attached. A maintainer publishes the draft from GitHub Releases. This project does not upload to Google Play.
 
 ## License
 
