@@ -1,8 +1,8 @@
 <div align="center">
 
-<img width="" src="metadata/en-US/images/featureGraphic.png" alt="Kenko" align="center">
+<img width="" src="metadata/en-US/images/featureGraphic.png" alt="tore" align="center">
 
-Kenko 是一款健身日志应用，为你提供合适的渐进超负荷训练与精心设计的训练计划
+tore（筋力トレーニング，Strength training）是一款健身日志应用，为你提供渐进超负荷训练与精心设计的训练计划。
 
 </div>
 

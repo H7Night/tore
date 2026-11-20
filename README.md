@@ -2,10 +2,9 @@
 
 <div align="center">
 
-<img width="" src="metadata/en-US/images/featureGraphic.png" alt="Kenko" align="center">
+<img width="" src="metadata/en-US/images/featureGraphic.png" alt="tore" align="center">
 
-Kenko is a workout journal which will provide you with appropriate progressive-overload and well
-thought-out plans
+tore is a workout journal for 筋力トレーニング (Strength training), with progressive overload and thoughtfully designed plans.
 
 </div>
 
